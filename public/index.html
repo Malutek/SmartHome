@@ -1,0 +1,85 @@
+<!doctype html>
+<html ng-app="app">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Magisterka App</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.4/superhero/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/css/app.css" rel="stylesheet" />
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.13/angular-ui-router.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.js"></script>
+
+    <!-- Highcharts + Angular controllers -->
+    <script src="http://code.highcharts.com/stock/highstock.src.js"></script>
+    <script src="https://rawgithub.com/pablojim/highcharts-ng/master/dist/highcharts-ng.js"></script>
+    <script src="/assets/js/dark-unica.js"></script>
+
+    <base href="/">
+
+    <script src="app.js"></script>
+    <script src="controllers/MainController.js"></script>
+    <script src="controllers/LoginController.js"></script>
+    <script src="controllers/DiagnosticController.js"></script>
+    <script src="services/AuthService.js"></script>
+    <script src="services/ApiService.js"></script>
+    <script src="services/ChartConfiguratorService.js"></script>
+</head>
+
+<body ng-controller="MainController">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a href="../" class="navbar-brand">SmartHome</a>
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse" id="navbar-main">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a class="menu-top-active" href ui-sref="dashboard">Dashboard</a>
+                    </li>
+                    <li>
+                        <a href ui-sref="diagnosticDashboard">Diagnostics</a>
+                    </li>
+                    <li>
+                        <a href ui-sref="diagnosticDashboard">Saving Energy</a>
+                    </li>
+                    <li>
+                        <a href ui-sref="diagnosticDashboard">Alarms</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li ng-switch="isAuthenticated()">
+                        <a href ng-click="login()" ng-switch-when="false" class="menu-top-active">Login</a>
+                        <a href ng-click="logout()" ng-switch-when="true">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="content-wrapper">
+        <div class="container">
+            <div ui-view></div>
+        </div>
+    </div>
+    <footer>
+        <div class="container">
+            <div class="row ">
+                <div class="col-md-12 ">Malutek@ 2015 | Template:
+                    <a href="https://bootswatch.com/" target="_blank">BootsWatch</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
