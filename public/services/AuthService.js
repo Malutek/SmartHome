@@ -5,7 +5,6 @@ app.service('AuthService', function ($window, ApiService) {
         isAuthenticated: function () {
             return $window.sessionStorage.token !== undefined;
         },
-
         authenticate: function (user, password) {
             return ApiService.authenticate(user, password)
                 .then(function (response) {

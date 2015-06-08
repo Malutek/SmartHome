@@ -31,11 +31,24 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
     $locationProvider.html5Mode(true);
 });
 
-app.run(function ($rootScope, $state, AuthService) {
+app.run(function ($rootScope, $state, $location, AuthService) {
     $rootScope.$on('$stateChangeStart', function (event, toState) {
         if (toState.authenticate && !AuthService.isAuthenticated()) {
             event.preventDefault();
             $state.go('login');
+        }
+    });
+    $rootScope.$on('$locationChangeSuccess', function () {
+        $rootScope.actualLocation = $location.path();
+    });
+
+    $rootScope.$watch(function () {
+        return $location.path()
+    }, function (newLocation, oldLocation) {
+        if ($rootScope.actualLocation === newLocation) {
+            if(newLocation === '/login') {
+                $state.go('dashboard');
+            }
         }
     });
 });

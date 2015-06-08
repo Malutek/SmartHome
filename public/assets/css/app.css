@@ -1,3 +1,26 @@
 .debug {
     border: 1px solid red;
 }
+
+.row-centered {
+    text-align: center;
+}
+
+.col-centered {
+    display: inline-block;
+    float: none;
+    text-align: left;
+    margin-right: -4px;
+}
+
+.login-panel {
+    margin-top: 42px;
+}
+
+footer {
+    padding: 20px;
+    display: table;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}

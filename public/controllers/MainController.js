@@ -1,6 +1,8 @@
 app.controller('MainController', function ($scope, $state, $window, AuthService) {
 
-    $scope.isAuthenticated = AuthService.isAuthenticated;
+    $scope.isAuthenticated = function () {
+        return AuthService.isAuthenticated();
+    };
 
     $scope.logout = function () {
         AuthService.logout();

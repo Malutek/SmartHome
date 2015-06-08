@@ -32,7 +32,7 @@
 </head>
 
 <body ng-controller="MainController">
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-inverse navbar-fixed-top" ng-show="isAuthenticated()">
         <div class="container">
             <div class="navbar-header">
                 <a href="../" class="navbar-brand">SmartHome</a>
@@ -72,12 +72,8 @@
         </div>
     </div>
     <footer>
-        <div class="container">
-            <div class="row ">
-                <div class="col-md-12 ">Malutek@ 2015 | Template:
-                    <a href="https://bootswatch.com/" target="_blank">BootsWatch</a>
-                </div>
-            </div>
+        <div>Malutek@ 2015 | Template:
+            <a href="https://bootswatch.com/" target="_blank">BootsWatch</a>
         </div>
     </footer>
 </body>
