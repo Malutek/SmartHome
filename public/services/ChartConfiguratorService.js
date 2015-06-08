@@ -42,6 +42,7 @@ app.service('ChartConfiguratorService', function ($http) {
                         }]
             },
             navigator: {
+                adaptToUpdatedData: false,
                 enabled: true
             }
         },
