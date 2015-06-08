@@ -36,14 +36,14 @@ module.exports = function (app) {
     });
 
     app.get('/api/temperatures/', function (req, res) {
-        Temperature.find({}, function (req, docs) {
+        Temperature.find({}).sort({time: 1}).exec(function (req, docs) {
             res.json(docs);
         });
 
     });
 
     app.get('/api/humidities/', function (req, res) {
-        Humidity.find({}, function (req, docs) {
+        Humidity.find({}).sort({time: 1}).exec(function (req, docs) {
             res.json(docs);
         });
     });

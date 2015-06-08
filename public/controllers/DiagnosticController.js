@@ -6,10 +6,7 @@ app.controller('DiagnosticController', function ($scope, ApiService, ChartConfig
         ApiService.getTemperatures()
             .then(function (temperatures) {
                 var arr = [];
-                var counter = 0;
                 temperatures.forEach(function (temperature) {
-                    if((counter++)%100 == 1)
-                        console.log( counter + '/' + temperatures.length);
                     arr.push([Date.parse(temperature.time), Number(temperature.value)]);
                 });
                 $scope.tempChartConfig.series.push({
