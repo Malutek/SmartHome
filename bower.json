@@ -1,0 +1,26 @@
+{
+  "name": "SmartHome",
+  "version": "0.1.0",
+  "homepage": "https://github.com/Malutek/SmartHome",
+  "authors": [
+    "Malutek <malutek@gmail.com>"
+  ],
+  "description": "---",
+  "main": "server.js",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-chart.js": "~0.7.1",
+    "responsive-toolkit": "~2.5.0",
+    "highcharts-ng": "~0.0.8"
+  }
+}

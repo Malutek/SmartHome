@@ -1,6 +1,6 @@
 /// <reference path="../typings/angularjs/angular.d.ts"/>
 
-var app = angular.module('app', ['ui.router', 'ui.bootstrap', "highcharts-ng"]);
+var app = angular.module('app', ['ui.router', 'ui.bootstrap', 'highcharts-ng', 'chart.js', 'LocalStorageModule', 'angularMoment', 'UnitFilters']);
 
 app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
     $stateProvider
@@ -13,17 +13,27 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
         .state('dashboard', {
             url: '/dashboard',
             templateUrl: 'views/dashboardTemplate.html',
-            controller: 'LoginController',
+            controller: 'DashboardController',
             authenticate: true
         })
-        .state('diagnosticDashboard', {
-            //        .state('dashboard.diagnostic', {
-            url: '/dashboard/diagnostic',
-            templateUrl: 'views/diagnosticDashboardTemplate.html',
+        .state('diagnostic', {
+            url: '/diagnostic',
+            templateUrl: 'views/diagnosticTemplate.html',
             controller: 'DiagnosticController',
             authenticate: true
+        })
+        .state('rules', {
+            url: '/rules',
+            templateUrl: 'views/rulesTemplate.html',
+            controller: 'RulesController',
+            authenticate: true
+        })
+        .state('configuration', {
+            url: '/configuration',
+            templateUrl: 'views/configurationTemplate.html',
+            controller: 'ConfigurationController',
+            authenticate: true
         });
-
     $urlRouterProvider.otherwise(function ($injector) {
         $injector.get('$state').go('dashboard');
     });
@@ -43,10 +53,10 @@ app.run(function ($rootScope, $state, $location, AuthService) {
     });
 
     $rootScope.$watch(function () {
-        return $location.path()
-    }, function (newLocation, oldLocation) {
+        return $location.path();
+    }, function (newLocation) {
         if ($rootScope.actualLocation === newLocation) {
-            if(newLocation === '/login') {
+            if (newLocation === '/login') {
                 $state.go('dashboard');
             }
         }
@@ -73,4 +83,20 @@ app.factory('authInterceptor', function ($rootScope, $q, $window) {
 
 app.config(function ($httpProvider) {
     $httpProvider.interceptors.push('authInterceptor');
+});
+
+app.config(function (moment) {
+    moment.locale('en', {
+        longDateFormat: {
+            LT: 'h:mm:ss A',
+            L: 'MM/DD/YYYY',
+            l: 'M/D/YYYY',
+            LL: 'MMMM Do YYYY',
+            ll: 'MMM D YYYY',
+            LLL: 'MMMM Do YYYY LT',
+            lll: 'MMM D YYYY LT',
+            LLLL: 'dddd, MMMM Do YYYY LT',
+            llll: 'ddd, MMM D YYYY LT'
+        }
+    });
 });

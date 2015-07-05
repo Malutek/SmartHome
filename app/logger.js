@@ -4,7 +4,7 @@ function getNow() {
     var d = new Date();
     d.setTime(d.getTime() + Math.abs(d.getTimezoneOffset()) * 60 * 1000);
     return d;
-};
+}
 
 winston.loggers.add('common', {
     console: {
@@ -13,7 +13,7 @@ winston.loggers.add('common', {
         label: 'Common',
         timestamp: function () {
             var d = new Date();
-            return d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+            return d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
         }
     },
     file: {
@@ -32,12 +32,31 @@ winston.loggers.add('mqtt', {
         label: 'MQTT',
         timestamp: function () {
             var d = new Date();
-            return d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+            return d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
         }
     },
     file: {
-        filename: 'log.txt',
+        filename: 'log_mqtt.txt',
         label: 'MQTT',
+        timestamp: function () {
+            return getNow();
+        }
+    }
+});
+
+winston.loggers.add('api', {
+    console: {
+        level: 'debug',
+        colorize: true,
+        label: 'API',
+        timestamp: function () {
+            var d = new Date();
+            return d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+        }
+    },
+    file: {
+        filename: 'log_api.txt',
+        label: 'API',
         timestamp: function () {
             return getNow();
         }
@@ -46,3 +65,4 @@ winston.loggers.add('mqtt', {
 
 module.exports = winston.loggers.get('common');
 module.exports.mqtt = winston.loggers.get('mqtt');
+module.exports.api = winston.loggers.get('api');

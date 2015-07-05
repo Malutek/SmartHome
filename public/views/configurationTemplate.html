@@ -1,0 +1,64 @@
+<div class="page-header clearfix">
+    <h1>CONFIGURATION</h1>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h2>Devices</h2>
+        <div class="col-md-12">
+            <table class="table table-striped table-hover device-table">
+                <thead>
+                    <tr>
+                        <th class="device-table">#</th>
+                        <th>Name</th>
+                        <th>Last Triggered</th>
+                        <th>State</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="device in devices">
+                        <td>{{ $index + 1}}</td>
+                        <td>{{ device.name }}</td>
+                        <td>{{ device.lastTriggered | amCalendar }}</td>
+                        <td>{{ device.state }}</td>
+                        <td>
+                            <span ng-show="device.state" class="label label-danger device-toggle-span" ng-click="toggleDeviceState(device)">Turn off</span>
+                            <span ng-hide="device.state" class="label label-success device-toggle-span" ng-click="toggleDeviceState(device)">Turn on</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <h2>Sensors</h2>
+        <div class="col-md-12">
+            <table class="table table-striped table-hover device-table">
+                <thead>
+                    <tr>
+                        <th class="device-table">#</th>
+                        <th>Name</th>
+                        <th>Last Reading</th>
+                        <th>Last read value</th>
+                        <th>State</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="sensor in sensors">
+                        <td>{{ $index + 1}}</td>
+                        <td>{{ sensor.name }}</td>
+                        <td>{{ sensor.time | amCalendar }}</td>
+                        <td>{{ sensor.value | sensorUnit:sensor.name}} </td>
+                        <td ng-switch="sensor.state">
+                            <span ng-switch-when="operational" class="label label-success device-toggle-span">Operational</span>
+                            <span ng-switch-when="delayed" class="label label-warning device-toggle-span">Delayed</span>
+                            <span ng-switch-when="offline" class="label label-danger device-toggle-span">Offline</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

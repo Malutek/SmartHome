@@ -4,7 +4,7 @@
 var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
-var mqtt = require('mqtt')
+var mqtt = require('mqtt');
 var port = process.env.PORT || 8080;
 
 var config = require('./app/config');
@@ -34,8 +34,9 @@ mqttClient.on('connect', function () {
     logger.info('MQTT Client connected.');
     mqttClient.subscribe('dht22_sensor');
 });
-    
+
 require('./app/api.js')(app);
+require('./app/rulesOverseer.js')();
 
 app.listen(port, function () {
     logger.info('App listening on port', this.address().port);

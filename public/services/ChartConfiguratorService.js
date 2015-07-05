@@ -39,7 +39,8 @@ app.service('ChartConfiguratorService', function ($http) {
                         }, {
                     type: 'all',
                     text: 'All'
-                        }]
+                        }],
+                inputEnabled: true,
             },
             navigator: {
                 adaptToUpdatedData: false,
@@ -47,16 +48,13 @@ app.service('ChartConfiguratorService', function ($http) {
             }
         },
         series: [],
-        title: {
-            text: ''
-        },
         yAxis: [{
             opposite: false,
             labels: {
                 align: 'right',
                 x: -5
             }
-            }],
+        }],
         xAxis: {
             type: 'datetime',
             dateTimeLabelFormats: {

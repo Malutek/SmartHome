@@ -1,0 +1,53 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="dismiss()">×</button>
+        <h4 class="modal-title">New rule<h4>
+    </div>
+    <div class="modal-body">
+        
+<form class="form-horizontal">
+    <fieldset>
+
+    <div class="form-group">
+      <label for="inputName" class="col-lg-2 control-label">Name</label>
+      <div class="col-lg-10">
+        <input type="text" class="form-control" id="inputName" placeholder="Name" ng-model="rule.name">
+      </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 debug">
+            <div>If</div>
+            <select class="form-control" id="inputDevice" ng-model="rule.condition.sensor">
+                <option style="display:none" value="">Select sensor..</option>
+                <option ng-repeat="sensor in sensors">{{sensor.name}}</option>
+            </select>
+        </div>
+        <div class="col-md-3 debug">
+            <div>will be</div>
+            <select class="form-control" id="inputOperator" ng-model="rule.condition.operator">
+                <option style="display:none" value="">operator..</option>
+                <option ng-repeat="operator in operators">{{operator.displayName}}</option>
+            </select>
+        </div>
+        <div class="col-md-3 debug">
+            <div>than</div>
+            <input type="number" step="0.1" class="form-control" id="inputValue" placeholder="Value.." ng-model="rule.condition.value">
+        </div>        
+        <div class="col-md-12 add-rule-modal-separator debug">THEN</div>
+        <div class="col-md-12 debug">
+            <div>Turn on</div>
+            <select class="form-control" id="inputDevice" ng-model="rule.device">
+                <option style="display:none" value="">Select device..</option>
+                <option ng-repeat="device in devices">{{device.name}}</option>
+            </select>
+        </div>
+    </div>          
+  </fieldset>
+</form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
+        <button type="button" class="btn btn-primary" ng-click="add()">Add</button>
+    </div>
+</div>

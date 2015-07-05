@@ -1,4 +1,4 @@
-app.service('AuthService', function ($window, ApiService) {
+app.service('AuthService', function ($window, localStorageService, ApiService) {
     var isAuth = false;
 
     return {
@@ -7,17 +7,21 @@ app.service('AuthService', function ($window, ApiService) {
         },
         authenticate: function (user, password) {
             return ApiService.authenticate(user, password)
-                .then(function (response) {
+                .then(function (data) {
                     isAuth = true;
-                    $window.sessionStorage.token = response.data.token;
+                    $window.sessionStorage.token = data.token;
+                    localStorageService.set('mongoCredentials', data.mongo);
                 }, function () {
+                    isAuth = false;
                     delete $window.sessionStorage.token;
+                    localStorageService.clearAll();
                 });
         },
         logout: function () {
             isAuth = false;
             $window.sessionStorage.token = '';
             delete $window.sessionStorage.token;
+            localStorageService.clearAll();
         }
     };
 });

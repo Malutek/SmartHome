@@ -5,5 +5,8 @@ module.exports = mongoose.model('Humidity', {
         type: Date,
         default: Date.now
     },
-    value: { type: Number, default: 0 }
+    value: {
+        type: Number,
+        default: 0
+    }
 });
