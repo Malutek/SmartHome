@@ -8,7 +8,7 @@ var Temperature = require('./models/temperature');
 var Humidity = require('./models/humidity');
 var User = require('./models/user');
 var Device = require('./models/device');
-var Rule = require('./models/Rule');
+var Rule = require('./models/rule');
 
 var logger = require('./logger').api;
 

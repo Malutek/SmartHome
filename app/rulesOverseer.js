@@ -1,5 +1,6 @@
 var Temperature = require('./models/temperature');
-var Rule = require('./models/Rule');
+var Rule = require('./models/rule');
+var board = require('./board');
 
 var rules;
 
@@ -7,19 +8,19 @@ function handleTemperature(rule) {
     Temperature.findOne({}).sort({
         'time': -1
     }).exec(function (err, temp) {
-        if (temp.value > rule.value) {
+        if (temp.value > rule.condition.value) {
+            board.turnOn();
             console.log('Turn on!');
         } else {
+            board.turnOff();
             console.log('Turn off!');
         }
-
     });
-    console.log('Should handle temp -' + rule);
+    //console.log('Should handle temp -' + rule);
 }
 
 function handleHumidity(rule) {
-    console.log('Should handle humid -' + rule);
-
+    //console.log('Should handle humid -' + rule);
 }
 
 function oversee() {
@@ -33,7 +34,6 @@ function oversee() {
                 //handleHumidity(rule);
                 break;
             }
-
         });
     }, 5000);
 }
