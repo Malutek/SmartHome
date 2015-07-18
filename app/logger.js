@@ -6,63 +6,35 @@ function getNow() {
     return d;
 }
 
-winston.loggers.add('common', {
-    console: {
-        level: 'debug',
-        colorize: true,
-        label: 'Common',
-        timestamp: function () {
-            var d = new Date();
-            return d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+function getConfig(label, fileLogName) {
+    return {
+        console: {
+            level: 'debug',
+            colorize: true,
+            label: label,
+            timestamp: function () {
+                var d = new Date();
+                return d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+            }
+        },
+        file: {
+            filename: fileLogName,
+            label: label,
+            timestamp: function () {
+                return getNow();
+            }
         }
-    },
-    file: {
-        filename: 'log.txt',
-        label: 'Common',
-        timestamp: function () {
-            return getNow();
-        }
-    }
-});
+    };
+}
 
-winston.loggers.add('mqtt', {
-    console: {
-        level: 'debug',
-        colorize: true,
-        label: 'MQTT',
-        timestamp: function () {
-            var d = new Date();
-            return d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
-        }
-    },
-    file: {
-        filename: 'log_mqtt.txt',
-        label: 'MQTT',
-        timestamp: function () {
-            return getNow();
-        }
-    }
-});
-
-winston.loggers.add('api', {
-    console: {
-        level: 'debug',
-        colorize: true,
-        label: 'API',
-        timestamp: function () {
-            var d = new Date();
-            return d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
-        }
-    },
-    file: {
-        filename: 'log_api.txt',
-        label: 'API',
-        timestamp: function () {
-            return getNow();
-        }
-    }
-});
+winston.loggers.add('common', getConfig('Common', 'log.txt'));
+winston.loggers.add('mqtt', getConfig('MQTT', 'log_mqtt.txt'));
+winston.loggers.add('api', getConfig('Api', 'log_api.txt'));
+winston.loggers.add('board', getConfig('Board', 'log_board.txt'));
+winston.loggers.add('rules', getConfig('RulesOverseer', 'log_rules.txt'));
 
 module.exports = winston.loggers.get('common');
 module.exports.mqtt = winston.loggers.get('mqtt');
 module.exports.api = winston.loggers.get('api');
+module.exports.board = winston.loggers.get('board');
+module.exports.rules = winston.loggers.get('rules');

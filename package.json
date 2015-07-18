@@ -9,6 +9,7 @@
     "body-parser": "^1.4.3",
     "express": "^4.6.1",
     "express-jwt": "^3.0.1",
+    "galileo-io": "^0.8.18",
     "johnny-five": "^0.8.84",
     "jsonwebtoken": "^5.0.1",
     "method-override": "^2.1.3",

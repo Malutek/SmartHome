@@ -15,3 +15,5 @@ npm-debug.log
 log.txt
 node_modules
 bower_components
+
+*.txt
