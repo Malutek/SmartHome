@@ -40,13 +40,13 @@ async.series([
             board.run(onSuccess);
     },
     function (onSuccess) {
-            rulesOverseer.run(onSuccess);
-    },
-    function (onSuccess) {
             app.listen(port, function () {
                 logger.info('Server is listening on port', this.address().port);
                 onSuccess();
             });
+    },
+    function (onSuccess) {
+            rulesOverseer.run(onSuccess);
     }],
     function (err, results) {
         if (err) {

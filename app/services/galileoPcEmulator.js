@@ -1,17 +1,18 @@
-var logger = require('./../logger').board;
+var logger = require('./../logger').emulator;
 var GalileoPcEmulator = function () {}
-var Led = function () {}
 
-GalileoPcEmulator.prototype.getLed = function () {
-    return new Led();
+var Dev = function () {}
+
+Dev.prototype.on = function (device) {
+    logger.silly('On');
 }
 
-Led.prototype.on = function () {
-    logger.debug('on');
+Dev.prototype.off = function (device) {
+    logger.silly('Off');
 }
 
-Led.prototype.off = function () {
-    logger.debug('off');
+GalileoPcEmulator.prototype.getDev = function () {
+    return new Dev();
 }
 
 module.exports = GalileoPcEmulator;

@@ -28,6 +28,11 @@ app.controller('AddRuleController', function ($scope, $modal, $controller, ApiSe
     };
 
     $scope.add = function () {
+        var device = _.find($scope.devices, function (device) {
+            return device.name === $scope.rule.device;
+        });
+        $scope.rule.device = device;
+
         ApiService.createRule($scope.rule).then(function () {
             $scope.ok();
         });

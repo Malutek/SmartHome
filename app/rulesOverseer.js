@@ -1,9 +1,11 @@
 var Humidity = require('./models/humidity');
 var Temperature = require('./models/temperature');
 var Rule = require('./models/rule');
+var async = require('async');
 var board = require('./board');
 var logger = require('./logger').rules;
 
+var isStarted = false;
 var rules;
 
 var operators = {
@@ -27,10 +29,11 @@ function handleTemperature(rule) {
     Temperature.findOne({}).sort({
         'time': -1
     }).exec(function (err, temp) {
+        logger.debug(rule.device.name);
         if (handleRule(rule, temp.value)) {
-            board.turnOn();
+            board.turnOn(rule.device);
         } else {
-            board.turnOff();
+            board.turnOff(rule.device);
         }
     });
 }
@@ -40,9 +43,9 @@ function handleHumidity(rule) {
         'time': -1
     }).exec(function (err, humid) {
         if (handleRule(rule, humid.value)) {
-            board.turnOn();
+            board.turnOn(rule.device);
         } else {
-            board.turnOff();
+            board.turnOff(rule.device);
         }
     });
 }
@@ -60,25 +63,29 @@ function oversee() {
             }
         });
     }, 5000);
+}
 
-    // refreshing rules
-    setInterval(function () {
-        Rule.find({}).sort({
+function updateRules(callback) {
+    Rule.find({})
+        .populate('device')
+        .sort({
             time: 1
-        }).exec(function (req, docs) {
+        })
+        .exec(function (req, docs) {
             rules = docs;
+            if (callback) {
+                callback();
+            }
         });
-    }, 15000);
 }
 
 function run(onSuccess) {
-    Rule.find({}).sort({
-        time: 1
-    }).exec(function (req, docs) {
-        rules = docs;
+    updateRules(function () {
+        setInterval(updateRules, 15000);
         oversee();
         logger.info('RulesOverseer ready...');
         onSuccess();
+
     });
 }
 

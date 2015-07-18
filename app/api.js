@@ -61,7 +61,6 @@ module.exports = function (app) {
     });
 
     app.post('/api/rules/', function (req, res) {
-        console.log(req.body);
         Rule.create(req.body, function (err) {
             if (err) {
                 logger.error('Error ocurred on sending rule to database. ' + err);

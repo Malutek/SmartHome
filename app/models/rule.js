@@ -11,7 +11,7 @@ module.exports = mongoose.model('Rule', {
         value: String,
     },
     device: {
-        type: String,
-        default: false
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Device'
     },
 });

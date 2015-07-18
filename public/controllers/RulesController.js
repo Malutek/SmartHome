@@ -14,7 +14,6 @@ app.controller('RulesController', function ($scope, $modal, ApiService, SensorsS
     function refresh() {
         ApiService.getRules().then(function (rules) {
             $scope.rules = rules;
-            console.log(rules);
         });
     };
 
