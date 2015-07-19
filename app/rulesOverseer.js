@@ -29,8 +29,7 @@ function handleTemperature(rule) {
     Temperature.findOne({}).sort({
         'time': -1
     }).exec(function (err, temp) {
-        logger.debug(rule.device.name);
-        if (handleRule(rule, temp.value)) {
+        if (handleRule(rule, temp.value) && !board.isOn(rule.device)) {
             board.turnOn(rule.device);
         } else {
             board.turnOff(rule.device);

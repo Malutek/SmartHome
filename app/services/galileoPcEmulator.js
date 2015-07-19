@@ -3,12 +3,20 @@ var GalileoPcEmulator = function () {}
 
 var Dev = function () {}
 
-Dev.prototype.on = function (device) {
+Dev.prototype.state = false;
+
+Dev.prototype.on = function () {
+    this.state = true;
     logger.silly('On');
 }
 
-Dev.prototype.off = function (device) {
+Dev.prototype.off = function () {
+    this.state = false;
     logger.silly('Off');
+}
+
+Dev.prototype.isOn = function () {
+    return this.state;
 }
 
 GalileoPcEmulator.prototype.getDev = function () {

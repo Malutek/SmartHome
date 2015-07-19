@@ -10,6 +10,11 @@ var dev11;
 var dev12;
 var dev13;
 
+function isOn(device) {
+    var dev = devs[device.pin];
+    return dev.isOn();
+}
+
 function turnOn(device) {
     logger.info('Turning on ' + device.name + ' (PIN ' + device.pin + ')');
     devs[device.pin].on();
@@ -49,3 +54,4 @@ function run(onSuccess) {
 module.exports.run = run;
 module.exports.turnOn = turnOn;
 module.exports.turnOff = turnOff;
+module.exports.isOn = isOn;

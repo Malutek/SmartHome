@@ -16,7 +16,8 @@ function getMockTemp(min, max) {
 }
 
 function listen() {
-    client.subscribe('dht22_sensor');
+    logger.info('MQTT Client listening...');
+    client.subscribe(DHT_22_TOPIC);
     client.on('message', function (topic, message) {
         if (topic === DHT_22_TOPIC) {
             var msg = JSON.parse(message.toString());
@@ -65,6 +66,8 @@ function connect() {
     client.on('close', function () {
         if (isConnected) {
             logger.info('MQTT Client closed, will try to reconnect..');
+            client.unsubscribe(DHT_22_TOPIC);
+            client.end(true);
             isConnected = false;
         }
     });
