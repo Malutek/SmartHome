@@ -29,10 +29,14 @@ function handleTemperature(rule) {
     Temperature.findOne({}).sort({
         'time': -1
     }).exec(function (err, temp) {
-        if (handleRule(rule, temp.value) && !board.isOn(rule.device)) {
-            board.turnOn(rule.device);
+        if (handleRule(rule, temp.value)) {
+            if (!board.isOn(rule.device)) {
+                board.turnOn(rule.device);
+            }
         } else {
-            board.turnOff(rule.device);
+            if (board.isOn(rule.device)) {
+                board.turnOff(rule.device);
+            }
         }
     });
 }
