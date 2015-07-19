@@ -20,49 +20,45 @@ var operators = {
     },
 };
 
-function handleRule(rule, sensorValue) {
-    var condition = rule.condition;
+function handleRule(condition, sensorValue) {
     return operators[condition.operator](sensorValue, condition.value);
 }
 
-function handleTemperature(rule) {
+function handleTemperature(condition) {
     Temperature.findOne({}).sort({
         'time': -1
     }).exec(function (err, temp) {
-        if (handleRule(rule, temp.value)) {
-            if (!board.isOn(rule.device)) {
-                board.turnOn(rule.device);
-            }
-        } else {
-            if (board.isOn(rule.device)) {
-                board.turnOff(rule.device);
-            }
-        }
+        return handleRule(condition, temp.value);
     });
 }
 
-function handleHumidity(rule) {
+function handleHumidity(condition) {
     Humidity.findOne({}).sort({
         'time': -1
     }).exec(function (err, humid) {
-        if (handleRule(rule, humid.value)) {
-            board.turnOn(rule.device);
-        } else {
-            board.turnOff(rule.device);
-        }
+        return handleRule(condition, humid.value);
     });
 }
 
 function oversee() {
     setInterval(function () {
         rules.forEach(function (rule) {
-            switch (rule.condition.sensor) {
-            case 'Temperature':
-                handleTemperature(rule);
-                break;
-            case 'Humidity':
-                handleHumidity(rule);
-                break;
+            var isTriggered = rule.conditions.every(function (condition) {
+                switch (condition.sensor) {
+                case 'Temperature':
+                    return handleTemperature(condition);
+                case 'Humidity':
+                    return handleHumidity(condition);
+                }
+            });
+            if (isTriggered) {
+                if (!board.isOn(rule.device)) {
+                    board.turnOn(rule.device);
+                }
+            } else {
+                if (board.isOn(rule.device)) {
+                    board.turnOff(rule.device);
+                }
             }
         });
     }, 5000);

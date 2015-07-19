@@ -19,12 +19,22 @@ app.controller('AddRuleController', function ($scope, $modal, $controller, ApiSe
 
     $scope.rule = {
         name: '',
-        condition: {
+        conditions: [{
             sensor: '',
             operator: '',
             value: '',
-        },
+        }],
         device: ''
+    };
+
+    $scope.addCondition = function () {
+        $scope.rule.conditions.push({
+            condition: {
+                sensor: '',
+                operator: '',
+                value: ''
+            }
+        });
     };
 
     $scope.add = function () {

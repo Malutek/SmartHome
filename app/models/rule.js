@@ -5,11 +5,11 @@ module.exports = mongoose.model('Rule', {
         type: String,
         required: true
     },
-    condition: {
+    conditions: [{
         sensor: String,
         operator: String,
         value: String,
-    },
+    }],
     device: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Device'
