@@ -58,7 +58,7 @@ function handleRuleForTime(rule) {
         return handleTime(timeConditions[0]);
     } else if (timeConditions.length === 2) {
         return handleTime(timeConditions[0]) && handleTime(timeConditions[1]);
-    } else {
+    } else if (timeConditions.length !== 0) {
         logger.error('Invalid rule\'s conditions definition - "' + rule.name + '"');
     }
 }

@@ -22,6 +22,12 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
             controller: 'DiagnosticController',
             authenticate: true
         })
+        .state('alarm', {
+            url: '/alarm',
+            templateUrl: 'views/alarmTemplate.html',
+            controller: 'AlarmController',
+            authenticate: true
+        })
         .state('rules', {
             url: '/rules',
             templateUrl: 'views/rulesTemplate.html',

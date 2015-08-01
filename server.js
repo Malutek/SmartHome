@@ -7,6 +7,7 @@ var mongoose = require('mongoose');
 var board = require('./app/board');
 var mqtt = require('./app/mqtt');
 var rulesOverseer = require('./app/rulesOverseer.js');
+var alarmOverseer = require('./app/alarmOverseer.js');
 var port = process.env.PORT || 8080;
 
 var config = require('./app/config');
@@ -47,8 +48,11 @@ async.series([
     },
     function (onSuccess) {
             rulesOverseer.run(onSuccess);
+    },
+    function (onSuccess) {
+            alarmOverseer.run(onSuccess);
     }],
-    function (err, results) {
+    function (err) {
         if (err) {
             logger.error('Smart failed to start!');
         } else {
