@@ -5,7 +5,7 @@
     </div>
     <div class="modal-body">
         
-<form class="form-horizontal">
+<form class="form-horizontal" name="form">
     <fieldset>
     <div class="row">
         <div class="col-md-12 col-lg-12 debug">
@@ -18,8 +18,9 @@
         <fieldset class="row" ng-repeat="condition in rule.conditions">
             <div class="col-md-4 col-lg-4 debug">
                 <div>If</div>
-                <select class="form-control" id="inputDevice" ng-model="condition.sensor">
+                <select class="form-control" id="inputDevice" ng-model="condition.sensor" ng-change="reset(condition)">
                     <option style="display:none" value="">Select sensor..</option>
+                    <option>Time</option>
                     <option ng-repeat="sensor in sensors">{{sensor.name}}</option>
                 </select>
             </div>
@@ -32,7 +33,8 @@
             </div>
             <div class="col-md-4 col-lg-4 debug">
                 <div>than</div>
-                <input type="number" step="0.1" class="form-control" id="inputValue" placeholder="Value.." ng-model="condition.value">
+                <input ng-if="condition.sensor != 'Time'" type="number" step="0.1" class="form-control" id="inputValue" placeholder="Value.." ng-model="condition.value">
+<input ng-if="condition.sensor == 'Time'" type="time" class="form-control" id="inputTime" placeholder="Value.." ng-model="condition.value">
             </div>
         </fieldset>
         <div class="row">
@@ -49,8 +51,8 @@
 </form>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-success pull-left" ng-click="addCondition()" >Add condition</button>
+        <button type="button" class="btn btn-success pull-left" ng-click="addCondition()">Add condition</button>
         <button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
-        <button type="button" class="btn btn-primary" ng-click="add()">Add</button>
+        <button type="button" class="btn btn-primary" ng-click="add()"  ng-disabled="!isValid">Add</button>
     </div>
 </div>

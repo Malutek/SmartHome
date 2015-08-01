@@ -8,7 +8,7 @@ module.exports = mongoose.model('Rule', {
     conditions: [{
         sensor: String,
         operator: String,
-        value: String,
+        value: Date,
     }],
     device: {
         type: mongoose.Schema.Types.ObjectId,

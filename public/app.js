@@ -86,6 +86,9 @@ app.config(function ($httpProvider) {
 });
 
 app.config(function (moment) {
+    angular.module('app').value('angularMomentConfig', {
+        timezone: 'Europe/Warsaw'
+    });
     moment.locale('en', {
         longDateFormat: {
             LT: 'h:mm:ss A',

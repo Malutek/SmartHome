@@ -67,7 +67,7 @@ function connect() {
         if (isConnected) {
             logger.info('MQTT Client closed, will try to reconnect..');
             client.unsubscribe(DHT_22_TOPIC);
-            client.end(true);
+            client.end();
             isConnected = false;
         }
     });

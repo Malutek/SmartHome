@@ -8,7 +8,7 @@ app.service('ApiService', function ($http, localStorageService) {
 
     function get(url) {
         return $http.get(url).then(extractResponse);
-    };
+    }
 
     return {
         authenticate: function (login, password) {
@@ -21,7 +21,6 @@ app.service('ApiService', function ($http, localStorageService) {
             });
         },
         createRule: function (rule) {
-            console.log(rule);
             return $http.post('/api/rules', rule).then(extractResponse);
         },
         updateDevice: function (device) {

@@ -1,4 +1,4 @@
-app.controller('AddRuleController', function ($scope, $modal, $controller, ApiService, SensorsService, $modalInstance) {
+app.controller('AddRuleController', function ($scope, $modal, $controller, ApiService, SensorsService, $modalInstance, moment) {
 
     $controller('ModalInstanceController', {
         $modalInstance: $modalInstance,
@@ -17,14 +17,28 @@ app.controller('AddRuleController', function ($scope, $modal, $controller, ApiSe
             value: '<'
     }];
 
+    function validate() {
+        return $scope.rule.name && $scope.rule.device && $scope.rule.conditions.every(function (condition) {
+            return condition.sensor && condition.operator && condition.value;
+        });
+    }
+
+    $scope.$watch('rule', function () {
+        $scope.isValid = validate();
+    }, true);
+
     $scope.rule = {
         name: '',
         conditions: [{
             sensor: '',
             operator: '',
-            value: '',
+            value: 0,
         }],
         device: ''
+    };
+
+    $scope.reset = function (condition) {
+        condition.value = '';
     };
 
     $scope.addCondition = function () {
@@ -32,22 +46,28 @@ app.controller('AddRuleController', function ($scope, $modal, $controller, ApiSe
             condition: {
                 sensor: '',
                 operator: '',
-                value: ''
+                value: 0
             }
         });
     };
 
     $scope.add = function () {
+
         var device = _.find($scope.devices, function (device) {
             return device.name === $scope.rule.device;
         });
         $scope.rule.device = device;
 
+        $scope.rule.conditions.forEach(function (condition) {
+            if (condition.value instanceof Date) {
+                condition.value = moment(condition.value).toDate();
+            }
+        });
+
         ApiService.createRule($scope.rule).then(function () {
             $scope.ok();
         });
     };
-
 
     (function () {
         ApiService.getDevices()
@@ -58,5 +78,4 @@ app.controller('AddRuleController', function ($scope, $modal, $controller, ApiSe
             $scope.sensors = sensors;
         });
     }());
-
 });

@@ -20,6 +20,7 @@
     "devel": true,
     "predef": ["angular"],
     "globals": {
-        "app": true
+        "app": true,
+        "_": false
     }
 }

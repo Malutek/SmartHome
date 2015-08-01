@@ -1,11 +1,10 @@
+var _ = require('underscore'); // jshint ignore:line
 var Humidity = require('./models/humidity');
 var Temperature = require('./models/temperature');
 var Rule = require('./models/rule');
-var async = require('async');
 var board = require('./board');
 var logger = require('./logger').rules;
 
-var isStarted = false;
 var rules;
 
 var operators = {
@@ -16,7 +15,7 @@ var operators = {
         return a < b;
     },
     'equal': function (a, b) {
-        return a == b;
+        return a == b; // jshint ignore:line
     },
 };
 
@@ -40,9 +39,35 @@ function handleHumidity(condition) {
     });
 }
 
+function handleTime(condition) {
+    var time = new Date(condition.value);
+    var now = new Date();
+    var p1 = operators[condition.operator](now.getHours(), time.getHours()); // hours
+    var p2 = time.getHours() === now.getHours() && operators[condition.operator](now.getMinutes(), time.getMinutes()); // minutes
+
+    //    logger.silly('Is... ' + now + ' ' + condition.operator + ' than ' + time + '? ' + (p1 || p2));
+    //    logger.silly('Op = ' + condition.operator + ', val = ' + (p1 || p2));
+    return (p1 || p2);
+}
+
+function handleRuleForTime(rule) {
+    var timeConditions = _.where(rule.conditions, {
+        sensor: 'Time'
+    });
+    if (timeConditions.length === 1 && timeConditions[0].operator === 'equal') {
+        return handleTime(timeConditions[0]);
+    } else if (timeConditions.length === 2) {
+        return handleTime(timeConditions[0]) && handleTime(timeConditions[1]);
+    } else {
+        logger.error('Invalid rule\'s conditions definition - "' + rule.name + '"');
+    }
+}
+
 function oversee() {
     setInterval(function () {
         rules.forEach(function (rule) {
+
+            var isTriggeredByTime = handleRuleForTime(rule);
             var isTriggered = rule.conditions.every(function (condition) {
                 switch (condition.sensor) {
                 case 'Temperature':
@@ -51,7 +76,8 @@ function oversee() {
                     return handleHumidity(condition);
                 }
             });
-            if (isTriggered) {
+            if (isTriggered || isTriggeredByTime) {
+                logger.silly('Triggered rule - "' + rule.name + '"');
                 if (!board.isOn(rule.device)) {
                     board.turnOn(rule.device);
                 }
@@ -71,6 +97,7 @@ function updateRules(callback) {
             time: 1
         })
         .exec(function (req, docs) {
+            logger.silly('Rules updated.');
             rules = docs;
             if (callback) {
                 callback();
