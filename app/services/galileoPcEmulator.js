@@ -1,39 +1,45 @@
 var logger = require('./../logger').emulator;
 var GalileoPcEmulator = function () {};
 
-var Dev = function (pin, name) {
-    this.name = name ? name : 'Mock Device';
-    this.pin = pin ? pin : -1;
-    this.state = false;
-};
+var Dev = (function () {
 
-Dev.prototype.on = function () {
-    this.state = true;
-    logger.silly('On');
-};
+    function Dev(pin, n) {
+        logger.debug(n);
+        this.name = n ? n : 'Mock Device';
+        this.pin = pin ? pin : -1;
+        this.state = false;
+    }
 
-Dev.prototype.off = function () {
-    this.state = false;
-    logger.silly('Off');
-};
+    Dev.prototype.emitRead = function () {
+        if (this.readCallback !== undefined) {
+            var mockBoolean = Math.random() < 0.1;
+            logger.debug(this.name + ' mocks digitalRead = ' + mockBoolean + ' pin = ' + this.pin);
+            this.readCallback(null, mockBoolean);
+        }
+    };
 
-Dev.prototype.isOn = function () {
-    return this.state;
-};
+    Dev.prototype.high = function () {
+        this.state = true;
+        logger.silly(this.name + ' set to high');
+    };
 
-Dev.prototype.digitalRead = function (callback) {
-    var mockBoolean = Math.random() < 0.5;
-    logger.silly(this.name + ' mocks digitalRead = ' + mockBoolean);
-    callback(mockBoolean);
-};
+    Dev.prototype.low = function () {
+        this.state = false;
+        logger.silly(this.name + ' set to low');
+    };
+
+    Dev.prototype.getState = function () {
+        return this.state;
+    };
+
+    Dev.prototype.read = function (callback) {
+        this.readCallback = callback;
+    };
+
+    return Dev;
+})();
 
 GalileoPcEmulator.prototype.devs = [];
-
-GalileoPcEmulator.prototype.digitalRead = function (pin, callback) {
-    var dev = this.devs[pin];
-    dev.digitalRead(callback);
-};
-
 GalileoPcEmulator.prototype.createDev = function (pin, name) {
     return new Dev(pin, name);
 };

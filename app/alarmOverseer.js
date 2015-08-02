@@ -4,6 +4,7 @@ var logger = require('./logger').alarm;
 
 var definition;
 var isArmed;
+var device;
 
 function triggerAlarm() {
     board.toggleBuzzer(true);
@@ -11,7 +12,7 @@ function triggerAlarm() {
 
 function oversee() {
     setInterval(function () {
-        logger.debug('just running');
+        //        board.getDevice(8).emitRead(); // For debuggeing purposes
     }, 5000);
 }
 
@@ -19,7 +20,7 @@ function updateDefinitions(callback) {
     Alarm.findOne({})
         .populate('device')
         .exec(function (req, def) {
-            logger.debug(def);
+            //            logger.debug(def);
             logger.silly('Alarm definition updated.');
             definition = def;
 
@@ -30,15 +31,14 @@ function updateDefinitions(callback) {
 }
 
 function setup() {
-    setInterval(function () {
-        board.read({
-            pin: 8
-        }, function (data) {
-            if (data) {
-                triggerAlarm();
-            }
-        });
-    }, 500);
+    device = board.readPir(function (err, data) {
+        if (err) {
+            logger.error('Error reading Pir: ' + err);
+        } else if (data) {
+            logger.silly('pir = ' + data);
+            triggerAlarm();
+        }
+    });
 }
 
 function run(onSuccess) {

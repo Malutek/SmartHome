@@ -1,3 +1,4 @@
+var _ = require('underscore'); // jshint ignore:line
 var five = require('johnny-five');
 var logger = require('./logger').board;
 var Galileo = require('galileo-io');
@@ -6,30 +7,60 @@ var GalileoPcEmulator = require('./services/galileoPcEmulator');
 var board;
 var devs = [];
 
-function isOn(device) {
-    var dev = devs[device.pin];
-    return dev.isOn();
+var deviceDefinitions = [{
+    name: 'Pir',
+    pin: 8
+}, {
+    name: 'Buzzer',
+    pin: 12
+
+}];
+
+function isOn(deviceDefinition) {
+    var device = devs[deviceDefinition.pin];
+    return device.value !== undefined ? device.value : device.getState();
 }
 
 function turnOn(device) {
-    logger.info('Turning on ' + device.name + ' (PIN ' + device.pin + ')');
-    devs[device.pin].on();
+    var name = device.name ? device.name : device.id;
+    logger.info('Turning on ' + name + ' (PIN ' + device.pin + ')');
+    devs[device.pin].high();
 }
 
 function turnOff(device) {
-    logger.info('Turning off ' + device.name + ' (PIN ' + device.pin + ')');
-    devs[device.pin].off();
+    var name = device.name ? device.name : device.id;
+    logger.info('Turning off ' + name + ' (PIN ' + device.pin + ')');
+    devs[device.pin].low();
+}
+
+// For debugging purposes
+function getDevice(pin) {
+    return devs[pin];
+}
+
+function getDeviceDefinition(name) {
+    return _.findWhere(deviceDefinitions, {
+        name: name
+    });
 }
 
 function read(device, callback) {
-    board.digitalRead(device.pin, callback);
+    device.read(callback);
+}
+
+function readPir(callback) {
+    var pir = getDeviceDefinition('Pir');
+    read(devs[pir.pin], callback);
 }
 
 function toggleBuzzer(shouldTurnOn) {
+    var buzzer = getDeviceDefinition('Buzzer');
     if (shouldTurnOn) {
-        turnOn(devs[12]);
+        if (!isOn(devs[buzzer.pin])) {
+            turnOn(devs[buzzer.pin]);
+        }
     } else {
-        turnOff(devs[12]);
+        turnOff(devs[buzzer.pin]);
     }
 }
 
@@ -40,21 +71,26 @@ function run(onSuccess) {
         });
 
         board.on('ready', function () {
-            dev[8] = new five.Pin(8);
-            dev[10] = new five.Pin(10);
-            dev[11] = new five.Pin(11);
-            dev[12] = new five.Pin(12);
-            dev[13] = new five.Pin(13);
+            deviceDefinitions.forEach(function (deviceDefinition) {
+                devs[deviceDefinition.pin] = new five.Pin(deviceDefinition.pin);
+                devs[deviceDefinition.pin].id = deviceDefinition.name;
+            });
+
+            devs[10] = new five.Pin(10);
+            devs[11] = new five.Pin(11);
+            devs[13] = new five.Pin(13);
             logger.info('Galileo ready...');
             onSuccess();
         });
     } else {
         board = new GalileoPcEmulator();
-        devs[8] = board.createDev(8);
+        deviceDefinitions.forEach(function (deviceDefinition) {
+            devs[deviceDefinition.pin] = board.createDev(deviceDefinition.pin, deviceDefinition.name);
+        });
+
         devs[10] = board.createDev(10);
         devs[11] = board.createDev(11);
-        devs[12] = board.createDev(12, 'Buzzer');
-        devs[13] = board.createDev(12);
+        devs[13] = board.createDev(13);
         board.devs = devs;
 
         logger.info('Pc Galileo Emulator ready...');
@@ -67,4 +103,6 @@ module.exports.turnOn = turnOn;
 module.exports.turnOff = turnOff;
 module.exports.isOn = isOn;
 module.exports.read = read;
+module.exports.readPir = readPir;
 module.exports.toggleBuzzer = toggleBuzzer;
+module.exports.getDevice = getDevice;
