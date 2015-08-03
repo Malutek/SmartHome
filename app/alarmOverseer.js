@@ -73,6 +73,11 @@ function arm() {
     }
 }
 
+function doDisarm() {
+    logger.warn('Alarm is disarmed!');
+    board.readPir(function () {});
+}
+
 function disarm() {
     logger.silly('disarm()');
     if (definition.isArmed) {
@@ -85,11 +90,6 @@ function disarm() {
             }
         });
     }
-}
-
-function doDisarm() {
-    logger.warn('Alarm is disarmed!');
-    board.readPir(function () {});
 }
 
 function oversee() {
