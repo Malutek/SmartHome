@@ -3,6 +3,7 @@ var Humidity = require('./models/humidity');
 var Temperature = require('./models/temperature');
 var Rule = require('./models/rule');
 var board = require('./board');
+var alarm = require('./alarmOverseer');
 var logger = require('./logger').rules;
 
 var rules;
@@ -65,6 +66,10 @@ function handleRuleForTime(rule) {
 
 function oversee() {
     setInterval(function () {
+        var devices = _.map(rules, function (rule) {
+            return rule.device;
+        });
+
         rules.forEach(function (rule) {
 
             var isTriggeredByTime = handleRuleForTime(rule);
@@ -79,13 +84,22 @@ function oversee() {
             if (isTriggered || isTriggeredByTime) {
                 logger.silly('Triggered rule - "' + rule.name + '"');
                 if (!board.isOn(rule.device)) {
+                    devices = _.reject(devices, function (device) {
+                        return device._id === rule.device._id;
+                    });
                     board.turnOn(rule.device);
                 }
-            } else {
-                if (board.isOn(rule.device)) {
-                    board.turnOff(rule.device);
-                }
             }
+            //            else {
+            //                if (board.isOn(rule.device)) {
+            //                    board.turnOff(rule.device);
+            //                }
+            //            }
+            devices.forEach(function (device) {
+                if (board.isOn(device.toObject()) && (device.usedByAlarm && !alarm.isTriggered())) {
+                    board.turnOff(device);
+                }
+            });
         });
     }, 5000);
 }

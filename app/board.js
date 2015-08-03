@@ -14,6 +14,9 @@ var deviceDefinitions = [{
     name: 'Buzzer',
     pin: 12
 
+}, {
+    name: 'Światło Góra',
+    pin: 11
 }];
 
 function isOn(deviceDefinition) {
@@ -36,6 +39,12 @@ function turnOff(device) {
 // For debugging purposes
 function getDevice(pin) {
     return devs[pin];
+}
+
+function getDeviceByName(name) {
+    return _.findWhere(devs, {
+        name: name
+    });
 }
 
 function getDeviceDefinition(name) {
@@ -64,8 +73,12 @@ function toggleBuzzer(shouldTurnOn) {
     }
 }
 
+function isEmulating() {
+    return Galileo.isGalileo();
+}
+
 function run(onSuccess) {
-    if (Galileo.isGalileo()) {
+    if (isEmulating()) {
         board = new five.Board({
             io: new Galileo()
         });
@@ -88,6 +101,11 @@ function run(onSuccess) {
             devs[deviceDefinition.pin] = board.createDev(deviceDefinition.pin, deviceDefinition.name);
         });
 
+        var interceptor = require('./services/keyboardInterceptor');
+        interceptor.hook('q', function () {
+            getDeviceByName('Pir').emitRead(true);
+        });
+
         devs[10] = board.createDev(10);
         devs[11] = board.createDev(11);
         devs[13] = board.createDev(13);
@@ -98,6 +116,7 @@ function run(onSuccess) {
     }
 }
 
+module.exports.isEmulating = isEmulating;
 module.exports.run = run;
 module.exports.turnOn = turnOn;
 module.exports.turnOff = turnOff;

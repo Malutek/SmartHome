@@ -12,7 +12,7 @@ module.exports = mongoose.model('Alarm', {
     conditions: [{
         sensor: String
     }],
-    triggers: [{
+    annunciators: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Device'
     }]

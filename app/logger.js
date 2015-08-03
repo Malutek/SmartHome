@@ -1,10 +1,5 @@
 var winston = require('winston');
-
-function getNow() {
-    var d = new Date();
-    d.setTime(d.getTime() + Math.abs(d.getTimezoneOffset()) * 60 * 1000);
-    return d;
-}
+var moment = require('moment');
 
 function getConfig(label, fileLogName, level) {
     return {
@@ -13,22 +8,21 @@ function getConfig(label, fileLogName, level) {
             colorize: true,
             label: label,
             timestamp: function () {
-                var d = new Date();
-                return d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+                return moment().format('HH:mm:ss').toString();
             }
         },
         file: {
             filename: fileLogName,
             label: label,
             timestamp: function () {
-                return getNow();
+                return moment().format('HH:mm:ss').toString();
             }
         }
     };
 }
 
 winston.loggers.add('common', getConfig('Common', 'log.txt'));
-winston.loggers.add('mqtt', getConfig('MQTT', 'log_mqtt.txt'));
+winston.loggers.add('mqtt', getConfig('MQTT', 'log_mqtt.txt', 'info'));
 winston.loggers.add('api', getConfig('Api', 'log_api.txt'));
 winston.loggers.add('board', getConfig('Board', 'log_board.txt'));
 winston.loggers.add('emulator', getConfig('Emulator', 'log_emulator.txt'));

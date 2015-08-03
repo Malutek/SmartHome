@@ -4,17 +4,18 @@ var GalileoPcEmulator = function () {};
 var Dev = (function () {
 
     function Dev(pin, n) {
-        logger.debug(n);
         this.name = n ? n : 'Mock Device';
         this.pin = pin ? pin : -1;
         this.state = false;
     }
 
-    Dev.prototype.emitRead = function () {
+    Dev.prototype.emitRead = function (value) {
         if (this.readCallback !== undefined) {
-            var mockBoolean = Math.random() < 0.1;
-            logger.debug(this.name + ' mocks digitalRead = ' + mockBoolean + ' pin = ' + this.pin);
-            this.readCallback(null, mockBoolean);
+            if (!value) {
+                value = Math.random() < 0.1;
+            }
+            logger.debug(this.name + ' emits ' + value + '! (Mock)');
+            this.readCallback(null, value);
         }
     };
 
