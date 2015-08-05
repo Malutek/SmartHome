@@ -9,6 +9,7 @@ var Humidity = require('./models/humidity');
 var User = require('./models/user');
 var Device = require('./models/device');
 var Rule = require('./models/rule');
+var Alarm = require('./models/alarm');
 
 var logger = require('./logger').api;
 
@@ -88,6 +89,20 @@ module.exports = function (app) {
         });
     });
 
+    app.put('/api/alarms/', function (req, res) {
+        var alarmDef = req.body;
+        console.log(alarmDef);
+        Alarm.update({
+            _id: alarmDef._id
+        }, alarmDef, function (err) {
+            logger.silly('Alarm status updated: ' + alarmDef);
+            var msg = err ? err : 'Ok';
+            res.send({
+                msg: msg
+            });
+        });
+    });
+
     app.get('/api/devices/', function (req, res) {
         Device.find({})
             .exec(function (req, docs) {
@@ -143,6 +158,14 @@ module.exports = function (app) {
         }).exec(function (req, docs) {
             res.json(docs);
         });
+    });
+
+    app.get('/api/alarms/', function (req, res) {
+        Alarm.findOne({})
+            .populate('device')
+            .exec(function (req, alarmDef) {
+                res.json(alarmDef);
+            });
     });
 
     // Setting home location 

@@ -1,8 +1,13 @@
-<div class="page-header clearfix">
-    <h1>ALARM</h1>
-</div>
 <div class="row">
-    <h2>Alarm state: </h2>
+    <div class="page-header clearfix">
+        <h1>ALARM</h1>
+    </div>
+
+    <h2>Arm state: </h2>
     <p class="text-success">{{ isArmed ? 'Armed' : 'Disarmed'}}</p>
-    <a href="#" class="btn btn-primary btn-lg" ng-click="toggle()">{{ isArmed ? 'Disarm' : 'Arm'}}</a>
+    <a href="#" class="btn btn-primary btn-lg" ng-click="toggleArmState()">{{ isArmed ? 'Disarm' : 'Arm'}}</a>
+
+    <h2>Alarm state: </h2>
+    <p class="text-success">{{ isTriggered ? 'Triggered' : 'Halted'}}</p>
+    <a href="#" class="btn btn-primary btn-lg" ng-click="toggleAlarmState()">{{ isTriggered ? 'Halt' : 'Trigger'}}</a>
 </div>

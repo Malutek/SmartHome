@@ -1,4 +1,4 @@
-app.controller('AlarmController', function ($scope, AlarmService) {
+app.controller('AlarmController', function ($scope, $rootScope, AlarmService) {
 
     function arm() {
         AlarmService.arm();
@@ -8,21 +8,39 @@ app.controller('AlarmController', function ($scope, AlarmService) {
         AlarmService.disarm();
     }
 
-    $scope.toggle = function () {
-        console.log($scope.isArmed);
+    function trigger() {
+        AlarmService.trigger();
+    }
+
+    function halt() {
+        AlarmService.halt();
+    }
+
+    $scope.toggleArmState = function () {
         if ($scope.isArmed) {
             disarm();
         } else {
             arm();
         }
-        $scope.updateState();
     };
 
-    $scope.updateState = function () {
-        $scope.isArmed = AlarmService.isArmed();
+    $scope.toggleAlarmState = function () {
+        if ($scope.isTriggered) {
+            halt();
+        } else {
+            trigger();
+        }
     };
 
     (function () {
-        $scope.updateState();
+        $scope.isArmed = AlarmService.isArmed();
+        $scope.isTriggered = AlarmService.isTriggered();
+
+        $rootScope.$on('isArmed', function (events, isArmed) {
+            $scope.isArmed = isArmed;
+        });
+        $rootScope.$on('isTriggered', function (events, isTriggered) {
+            $scope.isTriggered = isTriggered;
+        });
     })();
 });

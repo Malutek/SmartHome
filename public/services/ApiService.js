@@ -26,6 +26,9 @@ app.service('ApiService', function ($http, localStorageService) {
         updateDevice: function (device) {
             return $http.put('api/devices', device);
         },
+        updateAlarm: function (alarm) {
+            return $http.put('api/alarms', alarm);
+        },
         getTemperatures: function () {
             return $http.get(mongo.url + '/temperatures', {
                     params: {
@@ -62,6 +65,9 @@ app.service('ApiService', function ($http, localStorageService) {
         },
         getRules: function () {
             return get('/api/rules');
+        },
+        getAlarmDefinition: function () {
+            return get('/api/alarms');
         }
     };
 });
