@@ -29,6 +29,7 @@ winston.loggers.add('board', getConfig('Board', 'log_board.txt'));
 winston.loggers.add('emulator', getConfig('Emulator', 'log_emulator.txt'));
 winston.loggers.add('rules', getConfig('RulesOverseer', 'log_rules.txt'));
 winston.loggers.add('alarm', getConfig('AlarmOverseer', 'log_alarm.txt', 'silly'));
+winston.loggers.add('mailer', getConfig('Mailer', 'log_mail.txt', 'debug'));
 
 module.exports = winston.loggers.get('common');
 module.exports.mqtt = winston.loggers.get('mqtt');
@@ -37,3 +38,4 @@ module.exports.board = winston.loggers.get('board');
 module.exports.emulator = winston.loggers.get('emulator');
 module.exports.rules = winston.loggers.get('rules');
 module.exports.alarm = winston.loggers.get('alarm');
+module.exports.mailer = winston.loggers.get('mailer');

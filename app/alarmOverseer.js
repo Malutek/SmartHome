@@ -1,10 +1,13 @@
 var _ = require('underscore'); // jshint ignore:line
+var moment = require('moment');
 var Alarm = require('./models/alarm');
 var board = require('./board');
 var logger = require('./logger').alarm;
 var interceptor = require('./services/keyboardInterceptor');
+var mailer = require('./services/mailer');
 
 var definition;
+console.log(moment().calendar());
 
 function isTriggered() {
     return definition.isTriggered;
@@ -13,6 +16,8 @@ function isTriggered() {
 function doTriggerAlarm() {
     logger.warn('Alarm triggered!');
     board.toggleBuzzer(true);
+
+    mailer.sendMail('Movement Detector (PIR)', moment().calendar());
 }
 
 function triggerAlarm() {
