@@ -9,6 +9,16 @@ module.exports = mongoose.model('Alarm', {
         type: Boolean,
         required: true
     },
+    emailSettings: {
+        email: {
+            type: String,
+            required: true
+        },
+        isUsed: {
+            type: Boolean,
+            required: true,
+        }
+    },
     triggers: [{
         device: {
             type: mongoose.Schema.Types.ObjectId,

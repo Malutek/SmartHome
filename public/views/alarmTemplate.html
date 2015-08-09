@@ -58,7 +58,6 @@
                     </tbody>
                 </table>
             </div>
-
         </div>
         <div class="col-lg-6">
             <div class="panel panel-primary">
@@ -79,6 +78,13 @@
                             <td>{{ annunciator.device.name }}</td>
                             <td>
                                 <input type="checkbox" ng-model="annunciator.isUsed" ng-change="updateAnnunciators()">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{{ annunciators.length + 1}}</td>
+                            <td>Email to {{ emailSettings.email }}</td>
+                            <td>
+                                <input type="checkbox" ng-model="emailSettings.isUsed" ng-change="updateEmailSettings()">
                             </td>
                         </tr>
                     </tbody>

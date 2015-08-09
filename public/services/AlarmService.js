@@ -48,12 +48,21 @@ app.factory('AlarmService', function ($rootScope, $timeout, ApiService) {
                 return alarmDef.annunciators;
             });
         },
+        getEmailSettings: function () {
+            return alarmDefinition !== undefined ? alarmDefinition.emailSettings : ApiService.getAlarmDefinition().then(function (alarmDef) {
+                return alarmDef.emailSettings;
+            });
+        },
         updateTriggers: function (triggers) {
             alarmDefinition.triggers = triggers;
             ApiService.updateAlarm(alarmDefinition);
         },
         updateAnnunciators: function (annunciators) {
             alarmDefinition.annunciators = annunciators;
+            ApiService.updateAlarm(alarmDefinition);
+        },
+        updateEmailSettings: function (emailSettings) {
+            alarmDefinition.emailSettings = emailSettings;
             ApiService.updateAlarm(alarmDefinition);
         },
         arm: function () {

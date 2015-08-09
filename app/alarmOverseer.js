@@ -30,7 +30,11 @@ function doTriggerAlarm() {
     } else {
         logger.debug('Buzzer will not not buzz, because it is not active!');
     }
-    //mailer.sendMail('Movement Detector (PIR)', moment().calendar());
+    if (definition.emailSettings.isUsed) {
+        mailer.sendMail('Movement Detector (PIR)', moment().calendar());
+    } else {
+        logger.debug('Email will not be send, because it is not active!');
+    }
 }
 
 function triggerAlarm() {
