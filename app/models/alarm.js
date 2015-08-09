@@ -9,8 +9,15 @@ module.exports = mongoose.model('Alarm', {
         type: Boolean,
         required: true
     },
-    conditions: [{
-        sensor: String
+    triggers: [{
+        device: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Device'
+        },
+        isUsed: {
+            type: Boolean,
+            required: true,
+        }
     }],
     annunciators: [{
         type: mongoose.Schema.Types.ObjectId,

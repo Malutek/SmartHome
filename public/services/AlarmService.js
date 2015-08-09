@@ -38,6 +38,15 @@ app.factory('AlarmService', function ($rootScope, $timeout, ApiService) {
                 return alarmDef.isTriggered;
             });
         },
+        getTriggers: function () {
+            return alarmDefinition !== undefined ? alarmDefinition.triggers : ApiService.getAlarmDefinition().then(function (alarmDef) {
+                return alarmDef.triggers;
+            });
+        },
+        updateTriggers: function (triggers) {
+            alarmDefinition.triggers = triggers;
+            ApiService.updateAlarm(alarmDefinition);
+        },
         arm: function () {
             alarmDefinition.isArmed = true;
             ApiService.updateAlarm(alarmDefinition);

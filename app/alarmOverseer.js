@@ -1,3 +1,4 @@
+var _ = require('underscore'); // jshint ignore:line
 var Alarm = require('./models/alarm');
 var board = require('./board');
 var logger = require('./logger').alarm;
@@ -44,19 +45,32 @@ function haltAlarm() {
 function doArm() {
     var sec = 1;
     var interval = setInterval(function () {
-        logger.warn('Arming in ' + (sec--) + ' seconds..');
-        if (sec === 0) {
-            clearInterval(interval);
-            logger.warn('Alarm is armed!');
-            board.readPir(function (err, data) {
-                if (err) {
-                    logger.error('Error reading Pir: ' + err);
-                } else if (data) {
-                    triggerAlarm();
-                }
-            });
-        }
-    }, 1000);
+            logger.warn('Arming in ' + (sec--) + ' seconds..');
+            if (sec === 0) {
+                clearInterval(interval);
+                logger.warn('Alarm is armed!');
+                board.readPir(function (err, data) {
+                    if (err) {
+                        logger.error('Error reading Pir: ' + err);
+                    } else if (data) {
+                        var pir = board.getDeviceByName('Pir');
+                        var pirTrigger = _.filter(definition.triggers, function (trigger) {
+                            return trigger.device.pin === pir.pin;
+                        });
+
+                        var shouldTrigger = pirTrigger.some(function (triggerDef) {
+                            return triggerDef.isUsed;
+                        });
+                        if (shouldTrigger) {
+                            triggerAlarm();
+                        } else {
+                            logger.debug('Pir will not not trigger, because is not active!');
+                        }
+                    }
+                });
+            }
+        },
+        1000);
 }
 
 function arm() {
@@ -92,31 +106,29 @@ function disarm() {
     }
 }
 
-function oversee() {
-    setInterval(function () {
-        //        board.getDevice(8).emitRead(); // For debuggeing purposes
-    }, 5000);
+
+function isValidResponse(alarmDef) {
+    return alarmDef !== undefined && alarmDef.isArmed !== undefined && alarmDef.isTriggered !== undefined;
 }
 
-function updateDefinition(callback) {
+function oversee(callback) {
     Alarm.findOne({})
-        .populate('device')
+        .populate('triggers.device')
         .exec(function (req, alarmDef) {
-            //logger.silly('Alarm definition updated.');
-            if (definition) {
+            //            logger.debug(alarmDef.toObject());
+            //logger.silly('Alarm definition updated. (oversee)');
+            if (definition !== undefined && isValidResponse(alarmDef)) {
                 if (definition.isArmed && !alarmDef.isArmed) {
                     logger.debug('wylaczenie uzbrojenia');
                     doDisarm();
-                }
-                if (!definition.isArmed && alarmDef.isArmed) {
+                } else if (!definition.isArmed && alarmDef.isArmed) {
                     logger.debug('wlaczenie uzbrojenia');
                     doArm();
                 }
                 if (definition.isTriggered && !alarmDef.isTriggered) {
                     logger.debug('wylaczenie alarmu');
                     doHaltAlarm();
-                }
-                if (!definition.isTriggered && alarmDef.isTriggered) {
+                } else if (!definition.isTriggered && alarmDef.isTriggered) {
                     logger.debug('wlaczenie alarmu');
                     doTriggerAlarm();
                 }
@@ -139,13 +151,12 @@ function setupDebugHooks() {
 
 function run(onSuccess) {
     setupDebugHooks();
-    updateDefinition(function () {
-        setInterval(updateDefinition, 1000);
+    oversee(function () {
+        setInterval(oversee, 1000);
 
         if (definition.isArmed) {
             doArm();
         }
-        oversee();
 
         logger.info('AlarmOverseer ready...');
         onSuccess();

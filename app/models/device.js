@@ -15,6 +15,12 @@ module.exports = mongoose.model('Device', {
     },
     usedByAlarm: {
         type: Boolean,
+        required: false,
+        default: false
+    },
+    alarmTrigger: {
+        type: Boolean,
+        required: false,
         default: false
     },
     lastTriggered: {

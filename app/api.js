@@ -78,11 +78,12 @@ module.exports = function (app) {
 
     app.put('/api/devices/', function (req, res) {
         var device = req.body;
+        device.lastTriggered = Date.now();
         Device.update({
             _id: device._id,
-            lastTriggered: Date.now()
         }, device, function (err) {
             var msg = err ? err : 'Ok';
+            logger.debug(msg);
             res.send({
                 msg: msg
             });
@@ -104,10 +105,26 @@ module.exports = function (app) {
     });
 
     app.get('/api/devices/', function (req, res) {
+        logger.debug(req.params.type);
         Device.find({})
             .exec(function (req, docs) {
                 res.json(docs);
             });
+    });
+
+    app.get('/api/devices/:type', function (req, res) {
+        var type = req.params.type;
+        if (type !== 'alarm') {
+            res.status(404).send('Unknown filter type');
+        } else {
+            logger.debug(req.params.type);
+            Device.find({
+                    alarmTrigger: true
+                })
+                .exec(function (req, docs) {
+                    res.json(docs);
+                });
+        }
     });
 
     app.get('/api/sensors/', function (req, res) {
@@ -162,7 +179,7 @@ module.exports = function (app) {
 
     app.get('/api/alarms/', function (req, res) {
         Alarm.findOne({})
-            .populate('device')
+            .populate('triggers.device')
             .exec(function (req, alarmDef) {
                 res.json(alarmDef);
             });

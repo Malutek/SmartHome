@@ -125,3 +125,4 @@ module.exports.read = read;
 module.exports.readPir = readPir;
 module.exports.toggleBuzzer = toggleBuzzer;
 module.exports.getDevice = getDevice;
+module.exports.getDeviceByName = getDeviceByName;

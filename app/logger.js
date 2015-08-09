@@ -7,6 +7,7 @@ function getConfig(label, fileLogName, level) {
             level: level ? level : 'debug',
             colorize: true,
             label: label,
+            prettyPrint: true,
             timestamp: function () {
                 return moment().format('HH:mm:ss').toString();
             }
