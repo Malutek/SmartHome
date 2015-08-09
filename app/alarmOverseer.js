@@ -75,14 +75,6 @@ function doArm() {
                     if (err) {
                         logger.error('Error reading Pir: ' + err);
                     } else if (data) {
-                        var pir = board.getDeviceByName('Pir');
-                        var pirTrigger = _.filter(definition.triggers, function (trigger) {
-                            return trigger.device.pin === pir.pin;
-                        });
-
-                        var shouldTrigger = pirTrigger.some(function (triggerDef) {
-                            return triggerDef.isUsed;
-                        });
                         if (isDeviceActive('Pir', definition.triggers)) {
                             triggerAlarm();
                         } else {
@@ -128,7 +120,6 @@ function disarm() {
     }
 }
 
-
 function isValidResponse(alarmDef) {
     return alarmDef !== undefined && alarmDef.isArmed !== undefined && alarmDef.isTriggered !== undefined;
 }
@@ -138,21 +129,15 @@ function oversee(callback) {
         .populate('triggers.device')
         .populate('annunciators.device')
         .exec(function (req, alarmDef) {
-            //            logger.debug(alarmDef.toObject());
-            //logger.silly('Alarm definition updated. (oversee)');
             if (definition !== undefined && isValidResponse(alarmDef)) {
                 if (definition.isArmed && !alarmDef.isArmed) {
-                    logger.debug('wylaczenie uzbrojenia');
                     doDisarm();
                 } else if (!definition.isArmed && alarmDef.isArmed) {
-                    logger.debug('wlaczenie uzbrojenia');
                     doArm();
                 }
                 if (definition.isTriggered && !alarmDef.isTriggered) {
-                    logger.debug('wylaczenie alarmu');
                     doHaltAlarm();
                 } else if (!definition.isTriggered && alarmDef.isTriggered) {
-                    logger.debug('wlaczenie alarmu');
                     doTriggerAlarm();
                 }
             }
