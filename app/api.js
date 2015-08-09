@@ -105,7 +105,6 @@ module.exports = function (app) {
     });
 
     app.get('/api/devices/', function (req, res) {
-        logger.debug(req.params.type);
         Device.find({})
             .exec(function (req, docs) {
                 res.json(docs);
