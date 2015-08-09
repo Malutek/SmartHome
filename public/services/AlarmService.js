@@ -34,7 +34,7 @@ app.factory('AlarmService', function ($rootScope, $timeout, ApiService) {
             });
         },
         isTriggered: function () {
-            return alarmDefinition !== undefined ? alarmDefinition.isArmed : ApiService.getAlarmDefinition().then(function (alarmDef) {
+            return alarmDefinition !== undefined ? alarmDefinition.isTriggered : ApiService.getAlarmDefinition().then(function (alarmDef) {
                 return alarmDef.isTriggered;
             });
         },
@@ -43,8 +43,17 @@ app.factory('AlarmService', function ($rootScope, $timeout, ApiService) {
                 return alarmDef.triggers;
             });
         },
+        getAnnunciators: function () {
+            return alarmDefinition !== undefined ? alarmDefinition.annunciators : ApiService.getAlarmDefinition().then(function (alarmDef) {
+                return alarmDef.annunciators;
+            });
+        },
         updateTriggers: function (triggers) {
             alarmDefinition.triggers = triggers;
+            ApiService.updateAlarm(alarmDefinition);
+        },
+        updateAnnunciators: function (annunciators) {
+            alarmDefinition.annunciators = annunciators;
             ApiService.updateAlarm(alarmDefinition);
         },
         arm: function () {

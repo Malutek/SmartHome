@@ -7,17 +7,30 @@ var interceptor = require('./services/keyboardInterceptor');
 var mailer = require('./services/mailer');
 
 var definition;
-console.log(moment().calendar());
 
 function isTriggered() {
     return definition.isTriggered;
 }
 
+function isDeviceActive(deviceName, collection) {
+    var device = board.getDeviceByName(deviceName);
+    var deviceStatus = _.filter(collection, function (annunciator) {
+        return annunciator.device.pin === device.pin;
+    });
+
+    return deviceStatus.some(function (ds) {
+        return ds.isUsed;
+    });
+}
+
 function doTriggerAlarm() {
     logger.warn('Alarm triggered!');
-    board.toggleBuzzer(true);
-
-    mailer.sendMail('Movement Detector (PIR)', moment().calendar());
+    if (isDeviceActive('Buzzer', definition.annunciators)) {
+        board.toggleBuzzer(true);
+    } else {
+        logger.debug('Buzzer will not not buzz, because it is not active!');
+    }
+    //mailer.sendMail('Movement Detector (PIR)', moment().calendar());
 }
 
 function triggerAlarm() {
@@ -66,10 +79,10 @@ function doArm() {
                         var shouldTrigger = pirTrigger.some(function (triggerDef) {
                             return triggerDef.isUsed;
                         });
-                        if (shouldTrigger) {
+                        if (isDeviceActive('Pir', definition.triggers)) {
                             triggerAlarm();
                         } else {
-                            logger.debug('Pir will not not trigger, because is not active!');
+                            logger.debug('Pir will not not trigger, because it is not active!');
                         }
                     }
                 });
@@ -119,6 +132,7 @@ function isValidResponse(alarmDef) {
 function oversee(callback) {
     Alarm.findOne({})
         .populate('triggers.device')
+        .populate('annunciators.device')
         .exec(function (req, alarmDef) {
             //            logger.debug(alarmDef.toObject());
             //logger.silly('Alarm definition updated. (oversee)');

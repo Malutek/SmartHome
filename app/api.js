@@ -92,7 +92,6 @@ module.exports = function (app) {
 
     app.put('/api/alarms/', function (req, res) {
         var alarmDef = req.body;
-        console.log(alarmDef);
         Alarm.update({
             _id: alarmDef._id
         }, alarmDef, function (err) {
@@ -179,6 +178,7 @@ module.exports = function (app) {
     app.get('/api/alarms/', function (req, res) {
         Alarm.findOne({})
             .populate('triggers.device')
+            .populate('annunciators.device')
             .exec(function (req, alarmDef) {
                 res.json(alarmDef);
             });

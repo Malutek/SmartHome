@@ -20,7 +20,13 @@ module.exports = mongoose.model('Alarm', {
         }
     }],
     annunciators: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Device'
+        device: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Device'
+        },
+        isUsed: {
+            type: Boolean,
+            required: true,
+        }
     }]
 });

@@ -36,6 +36,10 @@ app.controller('AlarmController', function ($scope, $rootScope, AlarmService) {
         AlarmService.updateTriggers($scope.triggers);
     };
 
+    $scope.updateAnnunciators = function () {
+        AlarmService.updateAnnunciators($scope.annunciators);
+    };
+
     (function () {
         AlarmService.isArmed().then(function (isArmed) {
             $scope.isArmed = isArmed;
@@ -46,7 +50,9 @@ app.controller('AlarmController', function ($scope, $rootScope, AlarmService) {
         AlarmService.getTriggers().then(function (triggers) {
             $scope.triggers = triggers;
         });
-
+        AlarmService.getAnnunciators().then(function (annunciators) {
+            $scope.annunciators = annunciators;
+        });
         $rootScope.$on('isArmed', function (events, isArmed) {
             $scope.isArmed = isArmed;
         });
