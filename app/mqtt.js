@@ -1,3 +1,4 @@
+var emitter = require('./services/emitter');
 var config = require('./config');
 var mqtt = require('mqtt');
 var Temperature = require('./models/temperature');
@@ -5,6 +6,7 @@ var Humidity = require('./models/humidity');
 var logger = require('./logger').mqtt;
 
 var DHT_22_TOPIC = 'dht22_sensor';
+var DOORS_TOPIC = 'doors_sensor';
 
 var client;
 var isStarted;
@@ -12,16 +14,16 @@ var isConnected = false;
 var onFirstStart;
 
 function getMockTemp(min, max) {
-    return Math.random() * (28 - 22) + 22;
+    return Math.random() * (max - min) + min;
 }
 
 function listen() {
     logger.info('MQTT Client listening...');
     client.subscribe(DHT_22_TOPIC);
+    client.subscribe(DOORS_TOPIC);
     client.on('message', function (topic, message) {
+        var msg = JSON.parse(message);
         if (topic === DHT_22_TOPIC) {
-            var msg = JSON.parse(message.toString());
-
             var temperature = Number(msg.temperature);
             Temperature.create({
                 value: temperature,
@@ -43,6 +45,13 @@ function listen() {
                     logger.info('Humidity added - ' + humidity + '%');
                 }
             });
+        } else
+        if (topic === DOORS_TOPIC) {
+            if (msg.doorsSensor === 1) {
+                emitter.emit('doorClosed');
+            } else {
+                emitter.emit('doorOpened');
+            }
         }
     });
 }
@@ -67,6 +76,7 @@ function connect() {
         if (isConnected) {
             logger.info('MQTT Client closed, will try to reconnect..');
             client.unsubscribe(DHT_22_TOPIC);
+            client.unsubscribe(DOORS_TOPIC);
             client.end();
             isConnected = false;
         }

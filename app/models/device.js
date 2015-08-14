@@ -7,7 +7,14 @@ module.exports = mongoose.model('Device', {
     },
     pin: {
         type: Number,
-        required: true
+        required: false
+    },
+    mqtt: {
+        topic: {
+            type: String,
+            required: true
+        },
+        required: false
     },
     state: {
         type: Boolean,

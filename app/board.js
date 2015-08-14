@@ -17,6 +17,11 @@ var deviceDefinitions = [{
 }, {
     name: 'Światło Góra',
     pin: 11
+}, {
+    name: 'Doors Sensor',
+    mqtt: {
+        topic: 'doors_sensor'
+    }
 }];
 
 function isOn(deviceDefinition) {
@@ -98,7 +103,11 @@ function run(onSuccess) {
     } else {
         board = new GalileoPcEmulator();
         deviceDefinitions.forEach(function (deviceDefinition) {
-            devs[deviceDefinition.pin] = board.createDev(deviceDefinition.pin, deviceDefinition.name);
+            if (deviceDefinition.mqtt) {
+                devs[100 + devs.length] = board.createMqttDev(deviceDefinition.mqtt.topic, deviceDefinition.name);
+            } else {
+                devs[deviceDefinition.pin] = board.createDev(deviceDefinition.pin, deviceDefinition.name);
+            }
         });
 
         var interceptor = require('./services/keyboardInterceptor');

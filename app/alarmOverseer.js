@@ -1,5 +1,6 @@
 var _ = require('underscore'); // jshint ignore:line
 var moment = require('moment');
+var emitter = require('./services/emitter');
 var Alarm = require('./models/alarm');
 var board = require('./board');
 var logger = require('./logger').alarm;
@@ -12,12 +13,19 @@ function isTriggered() {
     return definition.isTriggered;
 }
 
-function isDeviceActive(deviceName, collection) {
+function isDeviceActive(deviceName, collection, isMqtt) {
     var device = board.getDeviceByName(deviceName);
-    var deviceStatus = _.filter(collection, function (annunciator) {
-        return annunciator.device.pin === device.pin;
-    });
+    var deviceStatus;
 
+    if (isMqtt) {
+        deviceStatus = _.filter(collection, function (annunciator) {
+            return annunciator.device.mqtt.topic === device.mqtt.topic;
+        });
+    } else {
+        deviceStatus = _.filter(collection, function (annunciator) {
+            return annunciator.device.pin === device.pin;
+        });
+    }
     return deviceStatus.some(function (ds) {
         return ds.isUsed;
     });
@@ -64,24 +72,48 @@ function haltAlarm() {
     });
 }
 
+function armPir() {
+    board.readPir(function (err, data) {
+        if (err) {
+            logger.error('Error reading Pir: ' + err);
+        } else if (data) {
+            if (isDeviceActive('Pir', definition.triggers)) {
+                triggerAlarm();
+            } else {
+                logger.debug('Pir will not not trigger, because it is not active!');
+            }
+        }
+    });
+}
+
+function onDoorOpened() {
+    logger.silly('Doors opened.');
+    if (isDeviceActive('Doors Sensor', definition.triggers, true)) {
+        triggerAlarm();
+    } else {
+        logger.debug('Doors Sensor will not not trigger, because it is not active!');
+    }
+}
+
+function onDoorClosed() {
+    logger.silly('Doors closed.');
+    // NYI
+}
+
+function armDoors() {
+    emitter.on('doorOpened', onDoorOpened);
+    emitter.on('doorClosed', onDoorClosed);
+}
+
 function doArm() {
     var sec = 1;
     var interval = setInterval(function () {
             logger.warn('Arming in ' + (sec--) + ' seconds..');
             if (sec === 0) {
                 clearInterval(interval);
+                armPir();
+                armDoors();
                 logger.warn('Alarm is armed!');
-                board.readPir(function (err, data) {
-                    if (err) {
-                        logger.error('Error reading Pir: ' + err);
-                    } else if (data) {
-                        if (isDeviceActive('Pir', definition.triggers)) {
-                            triggerAlarm();
-                        } else {
-                            logger.debug('Pir will not not trigger, because it is not active!');
-                        }
-                    }
-                });
             }
         },
         1000);
@@ -104,6 +136,8 @@ function arm() {
 function doDisarm() {
     logger.warn('Alarm is disarmed!');
     board.readPir(function () {});
+    emitter.removeListener('doorOpened', onDoorOpened);
+    emitter.removeListener('doorClosed', onDoorClosed);
 }
 
 function disarm() {
