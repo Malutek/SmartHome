@@ -6,6 +6,7 @@ var path = require('path');
 
 var Temperature = require('./models/temperature');
 var Humidity = require('./models/humidity');
+var Gas = require('./models/gas');
 var User = require('./models/user');
 var Device = require('./models/device');
 var Rule = require('./models/rule');
@@ -83,7 +84,6 @@ module.exports = function (app) {
             _id: device._id,
         }, device, function (err) {
             var msg = err ? err : 'Ok';
-            logger.debug(msg);
             res.send({
                 msg: msg
             });
@@ -144,6 +144,16 @@ module.exports = function (app) {
                         res.name = 'Humidity';
                         callback(err, res);
                     });
+                },
+                function (callback) {
+                    Gas.findOne({}).sort({
+                        'time': -1
+                    }).exec(function (err, gas) {
+                        var res = gas.toObject();
+                        logger.debug(res);
+                        res.name = 'Gas';
+                        callback(err, res);
+                    });
                 }
             ],
             function (err, results) {
@@ -161,6 +171,14 @@ module.exports = function (app) {
 
     app.get('/api/humidities/', function (req, res) {
         Humidity.find({}).sort({
+            time: 1
+        }).exec(function (req, docs) {
+            res.json(docs);
+        });
+    });
+
+    app.get('/api/gases/', function (req, res) {
+        Gas.find({}).sort({
             time: 1
         }).exec(function (req, docs) {
             res.json(docs);

@@ -57,6 +57,20 @@ app.service('ApiService', function ($http, localStorageService) {
                     return res.data;
                 });
         },
+        getGases: function () {
+            return $http.get(mongo.url + '/gas', {
+                    params: {
+                        l: documentLimit,
+                        s: {
+                            time: 1
+                        },
+                        apiKey: mongo.apiKey
+                    }
+                })
+                .then(function (res) {
+                    return res.data;
+                });
+        },
         getDevices: function () {
             return get('/api/devices');
         },

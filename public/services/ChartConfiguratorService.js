@@ -1,4 +1,4 @@
-app.service('ChartConfiguratorService', function ($http) {
+app.service('ChartConfiguratorService', function () {
 
     var config = {
         options: {
@@ -70,10 +70,27 @@ app.service('ChartConfiguratorService', function ($http) {
     };
     return {
         getTemperatureChartConfig: function () {
-            return JSON.parse(JSON.stringify(config));;
+            var obj = JSON.parse(JSON.stringify(config));
+            obj.yAxis[0].tickInterval = 3;
+            obj.yAxis[0].min = 24;
+            obj.yAxis[0].max = 35;
+
+            return obj;
         },
         getHumidityChartConfig: function () {
-            return JSON.parse(JSON.stringify(config));;
+            var obj = JSON.parse(JSON.stringify(config));
+            obj.yAxis[0].tickInterval = 10;
+            obj.yAxis[0].min = 30;
+            obj.yAxis[0].max = 70;
+
+            return obj;
+        },
+        getGasChartConfig: function () {
+            var obj = JSON.parse(JSON.stringify(config));
+            obj.yAxis[0].min = 0;
+            obj.yAxis[0].max = 100;
+
+            return obj;
         }
     };
 });

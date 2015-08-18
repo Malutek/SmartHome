@@ -5,6 +5,10 @@ angular.module('UnitFilters', []).filter('sensorUnit', function () {
             return input + ' °C';
         case 'Humidity':
             return input + ' %';
+        case 'Gas':
+            return input + ' %';
+        default:
+            return input;
         }
     };
 });

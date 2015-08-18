@@ -92,7 +92,7 @@ function toggleBuzzer(shouldTurnOn) {
 
 function isEmulating() {
     //return true;
-    return !Galileo.isGalileo();
+    return Galileo.isGalileo();
 }
 
 function run(onSuccess) {

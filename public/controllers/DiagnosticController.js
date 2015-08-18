@@ -1,6 +1,7 @@
 app.controller('DiagnosticController', function ($scope, ApiService, localStorageService, ChartConfiguratorService) {
     $scope.tempChartConfig = ChartConfiguratorService.getTemperatureChartConfig();
     $scope.humChartConfig = ChartConfiguratorService.getHumidityChartConfig();
+    $scope.gasChartConfig = ChartConfiguratorService.getGasChartConfig();
 
     (function () {
         ApiService.getTemperatures()
@@ -24,6 +25,19 @@ app.controller('DiagnosticController', function ($scope, ApiService, localStorag
                 });
                 $scope.humChartConfig.series.push({
                     name: 'ESP8266 Humidity',
+                    data: arr,
+                    selected: 2
+                });
+            });
+
+        ApiService.getGases()
+            .then(function (gases) {
+                var arr = [];
+                gases.forEach(function (gas) {
+                    arr.push([Date.parse(gas.time.$date), gas.value]);
+                });
+                $scope.gasChartConfig.series.push({
+                    name: 'Intel Galileo Gas',
                     data: arr,
                     selected: 2
                 });
