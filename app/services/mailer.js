@@ -13,17 +13,19 @@ function uncapitalize(str) {
     return str[0].toLowerCase() + str.substr(1);
 }
 
-function getMailOptions(trigger, timestamp) {
+function getMailOptions(text, timestamp) {
+    var htmlText = '<p>' + text + '. It happened ' + uncapitalize(timestamp) + '.</p>';
     return {
         from: 'Smart Home <smart.home.agh@gmail.com>',
         to: 'malutek+smarthome@gmail.com',
-        subject: 'Smart Home\'s alarm has been triggered!',
-        html: '<p>Smart Home\'s alarm has been triggered by ' + trigger + '. It happened ' + uncapitalize(timestamp) + '</p>'
+        subject: text,
+        html: htmlText
     };
 }
 
-function sendMail(trigger, timestamp) {
-    var mailOptions = getMailOptions(trigger, timestamp);
+function notifyAlarmTrigger(trigger, timestamp) {
+    var text = 'Smart Home\'s alarm has been triggered by ' + (trigger ? trigger : 'unknown') + '.';
+    var mailOptions = getMailOptions(text, timestamp);
     transporter.sendMail(mailOptions, function (err, info) {
         if (err) {
             return logger.error('Error occurred during sending an email. ' + err);
@@ -32,4 +34,16 @@ function sendMail(trigger, timestamp) {
     });
 }
 
-module.exports.sendMail = sendMail;
+function notifyGasLeakage(timestamp) {
+    var text = 'Smart Home has detected gas leakage!';
+    var mailOptions = getMailOptions(text, timestamp);
+    transporter.sendMail(mailOptions, function (err, info) {
+        if (err) {
+            return logger.error('Error occurred during sending an email. ' + err);
+        }
+        logger.info('Message sent: ' + info.response);
+    });
+}
+
+module.exports.notifyAlarmTrigger = notifyAlarmTrigger;
+module.exports.notifyGasLeakage = notifyGasLeakage;

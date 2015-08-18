@@ -23,7 +23,7 @@ function isDeviceActive(deviceName, collection, isMqtt) {
         });
     } else {
         deviceStatus = _.filter(collection, function (annunciator) {
-            return annunciator.device.pin === device.pin;
+            return device.pin !== undefined && annunciator.device.pin === device.pin;
         });
     }
     return deviceStatus.some(function (ds) {
@@ -31,7 +31,7 @@ function isDeviceActive(deviceName, collection, isMqtt) {
     });
 }
 
-function doTriggerAlarm() {
+function doTriggerAlarm(deviceName) {
     logger.warn('Alarm triggered!');
     if (isDeviceActive('Buzzer', definition.annunciators)) {
         board.toggleBuzzer(true);
@@ -39,19 +39,19 @@ function doTriggerAlarm() {
         logger.debug('Buzzer will not not buzz, because it is not active!');
     }
     if (definition.emailSettings.isUsed) {
-        mailer.sendMail('Movement Detector (PIR)', moment().calendar());
+        mailer.notifyAlarmTrigger(deviceName, moment().calendar());
     } else {
         logger.debug('Email will not be send, because it is not active!');
     }
 }
 
-function triggerAlarm() {
+function triggerAlarm(deviceName) {
     definition.isTriggered = true;
     definition.save(function (err) {
         if (err) {
             logger.error('Error ocurred on triggering an alarm. ' + err);
         } else {
-            doTriggerAlarm();
+            doTriggerAlarm(deviceName);
         }
     });
 }
@@ -78,7 +78,7 @@ function armPir() {
             logger.error('Error reading Pir: ' + err);
         } else if (data) {
             if (isDeviceActive('Pir', definition.triggers)) {
-                triggerAlarm();
+                triggerAlarm('Pir');
             } else {
                 logger.debug('Pir will not not trigger, because it is not active!');
             }
@@ -89,7 +89,7 @@ function armPir() {
 function onDoorOpened() {
     logger.silly('Doors opened.');
     if (isDeviceActive('Doors Sensor', definition.triggers, true)) {
-        triggerAlarm();
+        triggerAlarm('Doors Sensor');
     } else {
         logger.debug('Doors Sensor will not not trigger, because it is not active!');
     }
@@ -207,5 +207,3 @@ function run(onSuccess) {
 
 module.exports.run = run;
 module.exports.isTriggered = isTriggered;
-module.exports.triggerAlarm = triggerAlarm;
-module.exports.haltAlarm = haltAlarm;

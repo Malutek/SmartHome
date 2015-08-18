@@ -30,6 +30,11 @@ var deviceDefinitions = [{
     }
 }];
 
+function isEmulating() {
+    return true;
+    //return Galileo.isGalileo();
+}
+
 function isOn(deviceDefinition) {
     var device = devs[deviceDefinition.pin];
     return device.value !== undefined ? device.value : device.getState();
@@ -90,13 +95,8 @@ function toggleBuzzer(shouldTurnOn) {
     }
 }
 
-function isEmulating() {
-    //return true;
-    return Galileo.isGalileo();
-}
-
 function run(onSuccess) {
-    if (isEmulating()) {
+    if (!isEmulating()) {
         board = new five.Board({
             io: new Galileo()
         });
