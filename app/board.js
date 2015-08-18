@@ -3,6 +3,7 @@ var five = require('johnny-five');
 var logger = require('./logger').board;
 var Galileo = require('galileo-io');
 var GalileoPcEmulator = require('./services/galileoPcEmulator');
+var sensorsOverseer = require('./sensorsOverseer');
 
 var board;
 var devs = [];
@@ -11,12 +12,17 @@ var deviceDefinitions = [{
     name: 'Pir',
     pin: 8
 }, {
-    name: 'Buzzer',
-    pin: 12
-
-}, {
     name: 'Światło Góra',
     pin: 11
+}, {
+    name: 'Buzzer',
+    pin: 12
+}, {
+    name: 'Wiatrak',
+    pin: 13
+}, {
+    name: 'Gas Sensor',
+    pin: "A0"
 }, {
     name: 'Doors Sensor',
     mqtt: {
@@ -47,9 +53,15 @@ function getDevice(pin) {
 }
 
 function getDeviceByName(name) {
-    return _.findWhere(devs, {
-        name: name
-    });
+    if (isEmulating()) {
+        return _.findWhere(devs, {
+            name: name
+        });
+    } else {
+        return _.findWhere(devs, {
+            id: name
+        });
+    }
 }
 
 function getDeviceDefinition(name) {
@@ -79,7 +91,8 @@ function toggleBuzzer(shouldTurnOn) {
 }
 
 function isEmulating() {
-    return Galileo.isGalileo();
+    //return true;
+    return !Galileo.isGalileo();
 }
 
 function run(onSuccess) {
@@ -90,13 +103,23 @@ function run(onSuccess) {
 
         board.on('ready', function () {
             deviceDefinitions.forEach(function (deviceDefinition) {
-                devs[deviceDefinition.pin] = new five.Pin(deviceDefinition.pin);
-                devs[deviceDefinition.pin].id = deviceDefinition.name;
+                if (deviceDefinition.pin) {
+                    if (!isNaN(deviceDefinition.pin)) {
+                        devs[deviceDefinition.pin] = new five.Pin(deviceDefinition.pin);
+                        devs[deviceDefinition.pin].id = deviceDefinition.name;
+                    } else {
+                        devs[deviceDefinition.pin] = new five.Sensor({
+                            pin: deviceDefinition.pin,
+                            freq: 1000,
+                            threshold: 20,
+                            type: "analog"
+                        });
+                    }
+                }
             });
+            board.devs = devs;
+            sensorsOverseer.init(devs['A0']);
 
-            devs[10] = new five.Pin(10);
-            devs[11] = new five.Pin(11);
-            devs[13] = new five.Pin(13);
             logger.info('Galileo ready...');
             onSuccess();
         });
@@ -118,7 +141,6 @@ function run(onSuccess) {
         devs[10] = board.createDev(10);
         devs[11] = board.createDev(11);
         devs[13] = board.createDev(13);
-        board.devs = devs;
 
         logger.info('Pc Galileo Emulator ready...');
         onSuccess();

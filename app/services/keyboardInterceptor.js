@@ -1,11 +1,11 @@
 var keypress = require('keypress');
 
 function hook(char, callback) {
-    process.stdin.on('keypress', function (ch, key) {
-        if (key && key.name === char) {
-            callback();
-        }
-    });
+        process.stdin.on('keypress', function (ch, key) {
+            if (key && key.name === char) {
+                callback();
+            }
+        });
 }
 
 if (process.stdin.setRawMode !== undefined) {
