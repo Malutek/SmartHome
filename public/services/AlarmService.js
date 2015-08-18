@@ -29,27 +29,27 @@ app.factory('AlarmService', function ($rootScope, $timeout, ApiService) {
 
     return {
         isArmed: function () {
-            return alarmDefinition !== undefined ? alarmDefinition.isArmed : ApiService.getAlarmDefinition().then(function (alarmDef) {
+            return ApiService.getAlarmDefinition().then(function (alarmDef) {
                 return alarmDef.isArmed;
             });
         },
         isTriggered: function () {
-            return alarmDefinition !== undefined ? alarmDefinition.isTriggered : ApiService.getAlarmDefinition().then(function (alarmDef) {
+            return ApiService.getAlarmDefinition().then(function (alarmDef) {
                 return alarmDef.isTriggered;
             });
         },
         getTriggers: function () {
-            return alarmDefinition !== undefined ? alarmDefinition.triggers : ApiService.getAlarmDefinition().then(function (alarmDef) {
+            return ApiService.getAlarmDefinition().then(function (alarmDef) {
                 return alarmDef.triggers;
             });
         },
         getAnnunciators: function () {
-            return alarmDefinition !== undefined ? alarmDefinition.annunciators : ApiService.getAlarmDefinition().then(function (alarmDef) {
+            return ApiService.getAlarmDefinition().then(function (alarmDef) {
                 return alarmDef.annunciators;
             });
         },
         getEmailSettings: function () {
-            return alarmDefinition !== undefined ? alarmDefinition.emailSettings : ApiService.getAlarmDefinition().then(function (alarmDef) {
+            return ApiService.getAlarmDefinition().then(function (alarmDef) {
                 return alarmDef.emailSettings;
             });
         },
