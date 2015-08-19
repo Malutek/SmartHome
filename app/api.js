@@ -13,6 +13,7 @@ var Rule = require('./models/rule');
 var Alarm = require('./models/alarm');
 
 var logger = require('./logger').api;
+var serviceOverseer = require('./services/serviceOverseer');
 
 module.exports = function (app) {
     //    app.use('/api', expressJwt({
@@ -115,7 +116,6 @@ module.exports = function (app) {
         if (type !== 'alarm') {
             res.status(404).send('Unknown filter type');
         } else {
-            logger.debug(req.params.type);
             Device.find({
                     alarmTrigger: true
                 })
@@ -150,7 +150,6 @@ module.exports = function (app) {
                         'time': -1
                     }).exec(function (err, gas) {
                         var res = gas.toObject();
-                        logger.debug(res);
                         res.name = 'Gas';
                         callback(err, res);
                     });
@@ -200,6 +199,10 @@ module.exports = function (app) {
             .exec(function (req, alarmDef) {
                 res.json(alarmDef);
             });
+    });
+
+    app.get('/api/status/', function (req, res) {
+        res.json(serviceOverseer.serviceStatus());
     });
 
     // Setting home location 

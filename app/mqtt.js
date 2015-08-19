@@ -10,11 +10,16 @@ var DOORS_TOPIC = 'doors_sensor';
 
 var client;
 var isStarted;
+var failedToStart;
 var isConnected = false;
 var onFirstStart;
 
 function getMockTemp(min, max) {
     return Math.random() * (max - min) + min;
+}
+
+function isRunning() {
+    return isConnected;
 }
 
 function listen() {
@@ -58,29 +63,42 @@ function listen() {
 
 function connect() {
     logger.debug('connect()');
-    client = mqtt.connect(config.mqttConnectionString);
-    client.on('connect', function () {
-        isConnected = true;
-        logger.info('MQTT Client ready...');
+    if (!isConnected) {
+        client = mqtt.connect(config.mqttConnectionString);
+        client.on('connect', function () {
+            isConnected = true;
+            logger.info('MQTT Client ready...');
 
-        listen();
-        if (!isStarted) {
-            isStarted = true;
-            onFirstStart();
-        }
-    });
-    client.on('reconnect', function () {
-        logger.debug('reconnect event()');
-    });
-    client.on('close', function () {
-        if (isConnected) {
-            logger.info('MQTT Client closed, will try to reconnect..');
-            client.unsubscribe(DHT_22_TOPIC);
-            client.unsubscribe(DOORS_TOPIC);
-            client.end();
-            isConnected = false;
-        }
-    });
+            listen();
+            if (!isStarted) {
+                isStarted = true;
+                if (onFirstStart !== null) {
+                    onFirstStart();
+                    onFirstStart = null;
+                }
+            }
+        });
+        client.on('reconnect', function () {
+            logger.debug('reconnect event()');
+            if (!isStarted) {
+                client.end();
+                if (onFirstStart !== null) {
+                    onFirstStart(new Error('Mqtt can\'t connect.'));
+                    onFirstStart = null;
+                }
+            }
+
+        });
+        client.on('close', function () {
+            if (isConnected) {
+                logger.warn('MQTT Client closed, will try to reconnect..');
+                client.unsubscribe(DHT_22_TOPIC);
+                client.unsubscribe(DOORS_TOPIC);
+                client.end();
+                isConnected = false;
+            }
+        });
+    }
 }
 
 function run(onSuccess) {
@@ -97,3 +115,4 @@ function run(onSuccess) {
 }
 
 module.exports.run = run;
+module.exports.isRunning = isRunning;

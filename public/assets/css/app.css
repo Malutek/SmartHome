@@ -1,5 +1,5 @@
 .debug {
-    border: 1px solid red;
+    /*    border: 1px solid red;*/
 }
 
 .row-centered {
@@ -48,8 +48,25 @@ footer {
     text-align: center;
 }
 
+.font-bold {
+    font-weight: 400;
+}
+
 .btn-alarm {
     width: 150px;
+}
+
+.glyph-badge {
+    margin-left: 10px;
+}
+
+.glyph-dashboard {
+    font-size: 100px;
+}
+
+.btn-dashboard {
+    width: 100%;
+    padding: 20px 0px;
 }
 
 .bs-docs-section {
@@ -64,6 +81,11 @@ footer {
 .vertical-align {
     display: flex;
     align-items: center;
+}
+
+.horizontal-align {
+    display: block;
+    text-align: center;
 }
 
 .no-margin {

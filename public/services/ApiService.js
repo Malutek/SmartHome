@@ -82,6 +82,9 @@ app.service('ApiService', function ($http, localStorageService) {
         },
         getAlarmDefinition: function () {
             return get('/api/alarms');
+        },
+        getServiceStatus: function () {
+            return get('/api/status');
         }
     };
 });

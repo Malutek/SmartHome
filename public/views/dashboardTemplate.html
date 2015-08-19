@@ -1,7 +1,82 @@
-<div class="row">
-    <div class="col-md-12">
-        <h4 class="page-head-line">DASHBOARD</h4>
-        <canvas id="line" class="chart chart-line" data="data" labels="labels" legend="true" series="series" click="onClick">
-        </canvas>
+<div class="bs-docs-section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="page-header">
+                <h1>DASHBOARD</h1>
+            </div>
+        </div>
     </div>
 </div>
+
+<div class="bs-docs-section">
+    <div class="jumbotron">
+        <div class="row vertical-align">
+            <div class="col-lg-10 debug">
+                <h1>Welcome!</h1>
+                <p ng-show="isOk">Smart Home is <span class="text-success">fully operational</span>.</p>
+                <p ng-hide="isOk">Smart Home has some problems. These services are not running:
+                    <span class="text-danger" ng-repeat="status in statuses | filter: { status: false }">{{status.name}}</span>.
+                </p>
+            </div>
+            <div class="col-lg-2 debug">
+                <span ng-show="isOk" class="glyphicon glyphicon-ok glyph-dashboard horizontal-align text-success"></span>
+                <span ng-hide="isOk" class="glyphicon glyphicon-remove glyph-dashboard horizontal-align text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 col-lg-4 debug">
+            <a class="btn btn-primary btn-lg btn-dashboard" href ui-sref="diagnostic">
+                <div>
+                    <h1> {{ tempSensor.name }}<span class="glyphicon glyphicon-cloud glyph-badge"></span></h1>
+                    <h2 class="font-bold">{{ tempSensor.value | sensorUnit: tempSensor.name }}</h2>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-4 debug">
+            <a class="btn btn-primary btn-lg btn-dashboard" href ui-sref="diagnostic">
+                <h1>{{ humSensor.name }}<span class="glyphicon glyphicon-tint glyph-badge"></span></h1>
+                <h2 class="font-bold">{{ humSensor.value | sensorUnit: humSensor.name }}</h2>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-4 debug">
+            <a class="btn btn-primary btn-lg btn-dashboard" href ui-sref="diagnostic">
+                <h1>{{ gasSensor.name }}<span class="glyphicon glyphicon-fire glyph-badge"></span></h1>
+                <h2 class="font-bold">{{ gasSensor.value | sensorUnit: gasSensor.name }}</h2>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="bs-docs-section">
+    <div class="well well-lg">
+        <h3 ng-show='isArmed'>Alarm is <span class="text-danger">armed</span>.</h3>
+        <h3 ng-hide='isArmed'>Alarm is <span class="text-success">disarmed</span>.</h3>
+    </div>
+</div>
+
+<div class="bs-docs-section">
+    <div class="row">
+        <div class="col-md-4 col-lg-4 debug">
+            <a class="btn btn-primary btn-lg btn-dashboard" href ui-sref="configuration">
+                <h1> Devices </h1>
+                <h2 class="font-bold">{{ devices.length }}<span class="glyphicon glyphicon-cog glyph-badge"></span></h2>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-4 debug">
+            <a class="btn btn-primary btn-lg btn-dashboard" href ui-sref="rules">
+                <h1> Rules </h1>
+                <h2 class="font-bold">{{ rules.length }}<span class="glyphicon glyphicon-retweet glyph-badge"></span></h2>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-4 debug">
+            <a class="btn btn-primary btn-lg btn-dashboard" href ui-sref="configuration">
+                <h1> Sensors </h1>
+                <h2 class="font-bold">{{ sensors.length }}<span class="glyphicon glyphicon-eye-open glyph-badge"></span></h2>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!--Zrobić timeout na servicy, http zawsze wstaje, i jesli coś padło to dawać znać co (api odpytka czy wszystko wstało)-->

@@ -33,18 +33,16 @@ app.use(methodOverride('X-HTTP-Method-Override'));
 mongoose.connect(config.mongoConnectionString);
 require('./app/api.js')(app);
 
+app.listen(port, function () {
+    logger.info('Server is listening on port', this.address().port);
+});
+
 async.series([
     function (onSuccess) {
             mqtt.run(onSuccess);
     },
     function (onSuccess) {
             board.run(onSuccess);
-    },
-    function (onSuccess) {
-            app.listen(port, function () {
-                logger.info('Server is listening on port', this.address().port);
-                onSuccess();
-            });
     },
     function (onSuccess) {
             rulesOverseer.run(onSuccess);
@@ -54,7 +52,7 @@ async.series([
     }],
     function (err) {
         if (err) {
-            logger.error('Smart failed to start!');
+            logger.error('Smart failed to start!', err.message);
         } else {
             logger.info('\n\n >>> SmartHome is ready.. <<< \n');
         }

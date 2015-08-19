@@ -23,14 +23,14 @@ function getConfig(label, fileLogName, level) {
 }
 
 winston.loggers.add('common', getConfig('Common', 'log.txt'));
-winston.loggers.add('mqtt', getConfig('MQTT', 'log_mqtt.txt', 'info'));
+winston.loggers.add('mqtt', getConfig('MQTT', 'log_mqtt.txt', 'debug'));
 winston.loggers.add('api', getConfig('Api', 'log_api.txt'));
 winston.loggers.add('board', getConfig('Board', 'log_board.txt'));
 winston.loggers.add('emulator', getConfig('Emulator', 'log_emulator.txt'));
 winston.loggers.add('rules', getConfig('RulesOverseer', 'log_rules.txt'));
-winston.loggers.add('alarm', getConfig('AlarmOverseer', 'log_alarm.txt', 'silly'));
-winston.loggers.add('mailer', getConfig('Mailer', 'log_mail.txt', 'debug'));
-winston.loggers.add('sensor', getConfig('Sensor', 'log_sensor.txt', 'debug'));
+winston.loggers.add('alarm', getConfig('AlarmOverseer', 'log_alarm.txt'));
+winston.loggers.add('mailer', getConfig('Mailer', 'log_mail.txt'));
+winston.loggers.add('sensor', getConfig('Sensor', 'log_sensor.txt'));
 
 module.exports = winston.loggers.get('common');
 module.exports.mqtt = winston.loggers.get('mqtt');

@@ -21,8 +21,8 @@
                         <td>{{ device.lastTriggered | amCalendar }}</td>
                         <td>{{ device.state }}</td>
                         <td>
-                            <span ng-show="device.state" class="label label-danger device-toggle-span" ng-click="toggleDeviceState(device)">Turn off</span>
-                            <span ng-hide="device.state" class="label label-success device-toggle-span" ng-click="toggleDeviceState(device)">Turn on</span>
+                            <span ng-show="device.state && device.canBeToggled" class="label label-danger device-toggle-span" ng-click="toggleDeviceState(device)">Turn off</span>
+                            <span ng-hide="device.state || !device.canBeToggled" class="label label-success device-toggle-span" ng-click="toggleDeviceState(device)">Turn on</span>
                         </td>
                     </tr>
                 </tbody>

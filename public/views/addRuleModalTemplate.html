@@ -43,7 +43,7 @@
                 <div>Turn on</div>
                 <select class="form-control" id="inputDevice" ng-model="rule.device">
                     <option style="display:none" value="">Select device..</option>
-                    <option ng-repeat="device in devices">{{device.name}}</option>
+                    <option ng-repeat="device in devices | filter: { canBeToggled : true }">{{device.name}}</option>
                 </select>
             </div>
         </div>          

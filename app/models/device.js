@@ -20,6 +20,10 @@ module.exports = mongoose.model('Device', {
         type: Boolean,
         default: false
     },
+    canBeToggled: {
+        type: Boolean,
+        default: false
+    },
     usedByAlarm: {
         type: Boolean,
         required: false,
