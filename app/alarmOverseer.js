@@ -8,6 +8,7 @@ var interceptor = require('./services/keyboardInterceptor');
 var mailer = require('./services/mailer');
 
 var definition;
+var isSnoozed;
 
 function isTriggered() {
     return definition.isTriggered;
@@ -31,17 +32,31 @@ function isDeviceActive(deviceName, collection, isMqtt) {
     });
 }
 
+function snoozeAnnunciators() {
+    logger.silly('Alarm annunciators are set to snooze.');
+    isSnoozed = true;
+    setTimeout(function () {
+        isSnoozed = false;
+    }, 30000);
+}
+
 function doTriggerAlarm(deviceName) {
+    if (isSnoozed) {
+        logger.silly('Alarm annunciators snoozed. Leaving..');
+        return;
+    }
+    snoozeAnnunciators();
+
     logger.warn('Alarm triggered!');
     if (isDeviceActive('Buzzer', definition.annunciators)) {
         board.toggleBuzzer(true);
     } else {
-        logger.debug('Buzzer will not not buzz, because it is not active!');
+        logger.silly('Buzzer will not not buzz, because it is not active!');
     }
     if (definition.emailSettings.isUsed) {
         mailer.notifyAlarmTrigger(deviceName, moment().calendar());
     } else {
-        logger.debug('Email will not be send, because it is not active!');
+        logger.silly('Email will not be send, because it is not active!');
     }
 }
 

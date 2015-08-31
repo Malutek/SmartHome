@@ -28,7 +28,7 @@ winston.loggers.add('api', getConfig('Api', 'log_api.txt'));
 winston.loggers.add('board', getConfig('Board', 'log_board.txt'));
 winston.loggers.add('emulator', getConfig('Emulator', 'log_emulator.txt'));
 winston.loggers.add('rules', getConfig('RulesOverseer', 'log_rules.txt'));
-winston.loggers.add('alarm', getConfig('AlarmOverseer', 'log_alarm.txt'));
+winston.loggers.add('alarm', getConfig('AlarmOverseer', 'log_alarm.txt', 'silly'));
 winston.loggers.add('mailer', getConfig('Mailer', 'log_mail.txt'));
 winston.loggers.add('sensor', getConfig('Sensor', 'log_sensor.txt'));
 
