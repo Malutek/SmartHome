@@ -1,12 +1,12 @@
 <div class="row row-centered">
     <div class="col-md-6 col-lg-5 col-centered">
         <div class="panel panel-primary login-panel">
-            <div class="panel-heading">W celu wejścia do panelu zarządzania musisz się zalogować.</div>
+            <div class="panel-heading">Welcome to SmartHome!</div>
             <div class="panel-body">
                 <form>
                     <label>Login:</label>
                     <input type="text" class="form-control" ng-model="login" />
-                    <label>Hasło:</label>
+                    <label>Password:</label>
                     <input type="password" class="form-control" ng-model="password" />
                     <hr />
                     <button class="btn btn-primary" ng-click="submit()"><span class="glyphicon glyphicon-user"></span> Login</a>
@@ -14,7 +14,7 @@
             </div>
             <div class="panel-footer">
                 <alert type="danger" close="closeAlert()" ng-show="isError">Login lub hasło niepoprawne.</alert>
-                <strong>Uwaga: </strong>Przykładowe dane do zalogowania się to a:a.
+                <strong>Notice: </strong>Your password includes a special character and a number.
             </div>
         </div>
     </div>
