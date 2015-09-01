@@ -129,10 +129,6 @@ function run(onSuccess) {
 
             logger.info('Galileo ready...');
 
-            board.devs.forEach(function (devi) {
-                console.log(devi.id);
-            });
-
             onSuccess();
         });
     } else {
