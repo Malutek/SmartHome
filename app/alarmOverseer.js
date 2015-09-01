@@ -20,7 +20,7 @@ function isDeviceActive(deviceName, collection, isMqtt) {
 
     if (isMqtt) {
         deviceStatus = _.filter(collection, function (annunciator) {
-            return annunciator.device.mqtt.topic === device.mqtt.topic;
+            return device.mqtt !== undefined && annunciator.device.mqtt.topic === device.mqtt.topic;
         });
     } else {
         deviceStatus = _.filter(collection, function (annunciator) {

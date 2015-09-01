@@ -31,7 +31,7 @@ var deviceDefinitions = [{
 }];
 
 function isEmulating() {
-    return true;
+    return false;
     //return Galileo.isGalileo();
 }
 
@@ -117,10 +117,22 @@ function run(onSuccess) {
                     }
                 }
             });
+            devs[100 + devs.length] = {
+                id: 'Doors Sensor',
+                mqtt: {
+                    topic: 'doors_sensor'
+                }
+            };
+
             board.devs = devs;
             sensorsOverseer.init(devs['A0']);
 
             logger.info('Galileo ready...');
+
+            board.devs.forEach(function (devi) {
+                console.log(devi.id);
+            });
+
             onSuccess();
         });
     } else {
