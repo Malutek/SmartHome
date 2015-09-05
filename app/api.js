@@ -3,14 +3,15 @@ var jwt = require('jsonwebtoken');
 var async = require('async');
 var config = require('./config');
 var path = require('path');
+var emitter = require('./services/emitter');
 
 var Temperature = require('./models/temperature');
 var Humidity = require('./models/humidity');
 var Gas = require('./models/gas');
-var User = require('./models/user');
 var Device = require('./models/device');
 var Rule = require('./models/rule');
 var Alarm = require('./models/alarm');
+var Location = require('./models/location');
 
 var logger = require('./logger').api;
 var serviceOverseer = require('./services/serviceOverseer');
@@ -104,6 +105,26 @@ module.exports = function (app) {
         });
     });
 
+    app.put('/api/users/', function (req, res) {
+        var user = req.body;
+        User.update({
+            _id: user._id
+        }, user, function (err) {
+            logger.silly('User status updated: ' + user);
+            if (!err) {
+                if (user.isHome) {
+                    emitter.emit('userEnteredHome');
+                } else {
+                    emitter.emit('userLeftHome');
+                }
+            }
+            var msg = err ? err : 'Ok';
+            res.send({
+                msg: msg
+            });
+        });
+    });
+
     app.get('/api/devices/', function (req, res) {
         Device.find({})
             .exec(function (req, docs) {
@@ -185,11 +206,13 @@ module.exports = function (app) {
     });
 
     app.get('/api/rules/', function (req, res) {
-        Rule.find({}).sort({
-            time: 1
-        }).exec(function (req, docs) {
-            res.json(docs);
-        });
+        Rule.find({})
+            .populate('device')
+            .sort({
+                time: 1
+            }).exec(function (req, docs) {
+                res.json(docs);
+            });
     });
 
     app.get('/api/alarms/', function (req, res) {
@@ -203,6 +226,12 @@ module.exports = function (app) {
 
     app.get('/api/status/', function (req, res) {
         res.json(serviceOverseer.serviceStatus());
+    });
+
+    app.get('/api/users/', function (req, res) {
+        User.findOne({}).exec(function (req, docs) {
+            res.json(docs);
+        });
     });
 
     // Setting home location 

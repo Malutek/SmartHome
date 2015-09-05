@@ -222,3 +222,5 @@ function run(onSuccess) {
 
 module.exports.run = run;
 module.exports.isTriggered = isTriggered;
+module.exports.arm = arm;
+module.exports.disarm = disarm;

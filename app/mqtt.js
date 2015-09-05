@@ -10,13 +10,8 @@ var DOORS_TOPIC = 'doors_sensor';
 
 var client;
 var isStarted;
-var failedToStart;
 var isConnected = false;
 var onFirstStart;
-
-function getMockTemp(min, max) {
-    return Math.random() * (max - min) + min;
-}
 
 function isRunning() {
     return isConnected;

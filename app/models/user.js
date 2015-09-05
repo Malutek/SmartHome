@@ -1,12 +1,20 @@
 var mongoose = require('mongoose');
 
 module.exports = mongoose.model('User', {
-    user: {
+    login: {
         type: String,
         default: ''
     },
     password: {
         type: String,
         default: ''
+    },
+    isHome: {
+        type: Boolean,
+        default: false
+    },
+    isSmart: {
+        type: Boolean,
+        default: true
     }
 });

@@ -8,6 +8,7 @@ var board = require('./app/board');
 var mqtt = require('./app/mqtt');
 var rulesOverseer = require('./app/rulesOverseer.js');
 var alarmOverseer = require('./app/alarmOverseer.js');
+var locationOverseer = require('./app/services/locationOverseer.js');
 var port = process.env.PORT || 8080;
 
 var config = require('./app/config');
@@ -45,10 +46,13 @@ async.series([
             board.run(onSuccess);
     },
     function (onSuccess) {
-            rulesOverseer.run(onSuccess);
+        rulesOverseer.run(onSuccess);
     },
     function (onSuccess) {
             alarmOverseer.run(onSuccess);
+    },
+    function (onSuccess) {
+            locationOverseer.run(onSuccess);
     }],
     function (err) {
         if (err) {

@@ -2,6 +2,7 @@ var _ = require('underscore'); // jshint ignore:line
 var Humidity = require('./models/humidity');
 var Temperature = require('./models/temperature');
 var Rule = require('./models/rule');
+var User = require('./models/user');
 var board = require('./board');
 var alarm = require('./alarmOverseer');
 var logger = require('./logger').rules;
@@ -19,6 +20,18 @@ var operators = {
         return a == b; // jshint ignore:line
     },
 };
+
+function performIfIsSmart(action) {
+    User.findOne({}).exec(function (req, user) {
+        if (user.isSmart) {
+            if (user.isHome) {
+                action();
+            }
+        } else {
+            action();
+        }
+    });
+}
 
 function handleRule(condition, sensorValue) {
     return operators[condition.operator](sensorValue, condition.value);
@@ -66,39 +79,41 @@ function handleRuleForTime(rule) {
 
 function oversee() {
     setInterval(function () {
-        var devices = _.map(rules, function (rule) {
-            return rule.device;
-        });
-
-        rules.forEach(function (rule) {
-
-            var isTriggeredByTime = handleRuleForTime(rule);
-            var isTriggered = rule.conditions.every(function (condition) {
-                switch (condition.sensor) {
-                case 'Temperature':
-                    return handleTemperature(condition);
-                case 'Humidity':
-                    return handleHumidity(condition);
-                }
+        performIfIsSmart(function () {
+            var devices = _.map(rules, function (rule) {
+                return rule.device;
             });
-            if (isTriggered || isTriggeredByTime) {
-                logger.silly('Triggered rule - "' + rule.name + '"');
-                if (!board.isOn(rule.device)) {
-                    devices = _.reject(devices, function (device) {
-                        return device._id === rule.device._id;
-                    });
-                    board.turnOn(rule.device);
+
+            rules.forEach(function (rule) {
+
+                var isTriggeredByTime = handleRuleForTime(rule);
+                var isTriggered = rule.conditions.every(function (condition) {
+                    switch (condition.sensor) {
+                    case 'Temperature':
+                        return handleTemperature(condition);
+                    case 'Humidity':
+                        return handleHumidity(condition);
+                    }
+                });
+                if (isTriggered || isTriggeredByTime) {
+                    logger.silly('Triggered rule - "' + rule.name + '"');
+                    if (!board.isOn(rule.device)) {
+                        devices = _.reject(devices, function (device) {
+                            return device._id === rule.device._id;
+                        });
+                        board.turnOn(rule.device);
+                    }
                 }
-            }
-            //            else {
-            //                if (board.isOn(rule.device)) {
-            //                    board.turnOff(rule.device);
-            //                }
-            //            }
-            devices.forEach(function (device) {
-                if (board.isOn(device.toObject()) && (device.usedByAlarm && !alarm.isTriggered())) {
-                    board.turnOff(device);
-                }
+                //            else {
+                //                if (board.isOn(rule.device)) {
+                //                    board.turnOff(rule.device);
+                //                }
+                //            }
+                devices.forEach(function (device) {
+                    if (board.isOn(device.toObject()) && (device.usedByAlarm && !alarm.isTriggered())) {
+                        board.turnOff(device);
+                    }
+                });
             });
         });
     }, 5000);
