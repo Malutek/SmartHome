@@ -29,6 +29,9 @@ app.service('ApiService', function ($http, localStorageService) {
         updateAlarm: function (alarm) {
             return $http.put('api/alarms', alarm);
         },
+        updateUser: function (user) {
+            return $http.put('api/users', user);
+        },
         getTemperatures: function () {
             return $http.get(mongo.url + '/temperatures', {
                     params: {
@@ -85,6 +88,9 @@ app.service('ApiService', function ($http, localStorageService) {
         },
         getServiceStatus: function () {
             return get('/api/status');
+        },
+        getUser: function () {
+            return get('/api/users');
         }
     };
 });

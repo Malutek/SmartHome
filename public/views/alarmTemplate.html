@@ -16,10 +16,10 @@
     </div>
 
     <div class="row vertical-align">
-        <div class="col-lg-10">
+        <div class="col-lg-10  col-md-10">
             <h2 class="no-margin text-info">{{ isArmed ? 'Manual alarm control:' : 'Manual alarm control'}}</h2>
         </div>
-        <div class="col-lg-2 ">
+        <div class="col-lg-2  col-md-2">
             <a href="#" class="btn btn-lg btn-alarm pull-right" ng-class="isTriggered ? 'btn-danger' : 'btn-info'" ng-click="toggleAlarmState() ">{{ isTriggered ? 'Halt' : 'Trigger'}}</a>
         </div>
     </div>

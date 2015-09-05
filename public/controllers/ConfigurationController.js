@@ -6,14 +6,21 @@ app.controller('ConfigurationController', function ($scope, ApiService, SensorsS
         ApiService.updateDevice(device);
     };
 
+    $scope.toggleIsSmartState = function () {
+        $scope.user.isSmart = !$scope.user.isSmart;
+        ApiService.updateUser($scope.user);
+    };
+
     (function () {
-        ApiService.getDevices()
-            .then(function (devices) {
-                $scope.devices = devices;
-            });
+        ApiService.getDevices().then(function (devices) {
+            $scope.devices = devices;
+        });
 
         SensorsService.getSensors().then(function (sensors) {
             $scope.sensors = sensors;
+        });
+        ApiService.getUser().then(function (user) {
+            $scope.user = user;
         });
     }());
 });
