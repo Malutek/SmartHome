@@ -185,11 +185,13 @@ module.exports = function (app) {
     });
 
     app.get('/api/rules/', function (req, res) {
-        Rule.find({}).sort({
-            time: 1
-        }).exec(function (req, docs) {
-            res.json(docs);
-        });
+        Rule.find({})
+            .populate('device')
+            .sort({
+                time: 1
+            }).exec(function (req, docs) {
+                res.json(docs);
+            });
     });
 
     app.get('/api/alarms/', function (req, res) {
