@@ -11,7 +11,7 @@ var Gas = require('./models/gas');
 var Device = require('./models/device');
 var Rule = require('./models/rule');
 var Alarm = require('./models/alarm');
-var Location = require('./models/location');
+var User = require('./models/user');
 
 var logger = require('./logger').api;
 var serviceOverseer = require('./services/serviceOverseer');
