@@ -3,7 +3,7 @@ var five = require('johnny-five');
 var logger = require('./logger').board;
 var Galileo = require('galileo-io');
 var GalileoPcEmulator = require('./services/galileoPcEmulator');
-var sensorsOverseer = require('./sensorsOverseer');
+var sensorsOverseer = require('./overseers/sensorsOverseer');
 
 var board;
 var devs = [];
@@ -31,7 +31,7 @@ var deviceDefinitions = [{
 }];
 
 function isEmulating() {
-    return false;
+    return true;
     //return Galileo.isGalileo();
 }
 

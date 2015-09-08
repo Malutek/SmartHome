@@ -14,7 +14,7 @@ var Alarm = require('./models/alarm');
 var User = require('./models/user');
 
 var logger = require('./logger').api;
-var serviceOverseer = require('./services/serviceOverseer');
+var serviceOverseer = require('./overseers/serviceOverseer');
 
 module.exports = function (app) {
     //    app.use('/api', expressJwt({

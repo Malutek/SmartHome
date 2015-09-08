@@ -1,11 +1,11 @@
 var _ = require('underscore'); // jshint ignore:line
-var Humidity = require('./models/humidity');
-var Temperature = require('./models/temperature');
-var Rule = require('./models/rule');
-var User = require('./models/user');
-var board = require('./board');
+var Humidity = require('./../models/humidity');
+var Temperature = require('./../models/temperature');
+var Rule = require('./../models/rule');
+var User = require('./../models/user');
+var board = require('./../board');
 var alarm = require('./alarmOverseer');
-var logger = require('./logger').rules;
+var logger = require('./../logger').rules;
 
 var rules;
 

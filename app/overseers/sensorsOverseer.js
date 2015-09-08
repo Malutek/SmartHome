@@ -1,7 +1,7 @@
 var moment = require('moment');
-var Gas = require('./models/gas');
-var logger = require('./logger').sensor;
-var mailer = require('./services/mailer');
+var Gas = require('./../models/gas');
+var logger = require('./../logger').sensor;
+var mailer = require('./../services/mailer');
 
 function oversee(value) {
     if (value > 40) {

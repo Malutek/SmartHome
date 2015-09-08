@@ -1,11 +1,11 @@
 var _ = require('underscore'); // jshint ignore:line
 var moment = require('moment');
-var emitter = require('./services/emitter');
-var Alarm = require('./models/alarm');
-var board = require('./board');
-var logger = require('./logger').alarm;
-var interceptor = require('./services/keyboardInterceptor');
-var mailer = require('./services/mailer');
+var emitter = require('./../services/emitter');
+var Alarm = require('./../models/alarm');
+var board = require('./../board');
+var logger = require('./../logger').alarm;
+var interceptor = require('./../services/keyboardInterceptor');
+var mailer = require('./../services/mailer');
 
 var definition;
 var isSnoozed;

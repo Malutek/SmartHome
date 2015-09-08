@@ -1,6 +1,6 @@
-var emitter = require('./emitter');
+var emitter = require('./../services/emitter');
 var logger = require('./../logger');
-var alarmOverseer = require('./../alarmOverseer');
+var alarmOverseer = require('./alarmOverseer');
 var User = require('./../models/user');
 
 function performIfIsSmart(action) {
