@@ -28,6 +28,11 @@ var deviceDefinitions = [{
     mqtt: {
         topic: 'doors_sensor'
     }
+}, {
+    name: 'Window Sensor',
+    mqtt: {
+        topic: 'window_sensor'
+    }
 }];
 
 function isEmulating() {
